@@ -4,6 +4,10 @@ import com.saneacre.gecons.domain.demanda.CriaDemandaDTO;
 import com.saneacre.gecons.domain.demanda.BuscaDemandasDTO;
 import com.saneacre.gecons.domain.demanda.DemandaEntity;
 import com.saneacre.gecons.domain.demanda.DemandaRepository;
+import com.saneacre.gecons.domain.enums.Grupos;
+import com.saneacre.gecons.domain.enums.TiposDemanda;
+import com.saneacre.gecons.domain.enums.Unidades;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,10 +40,11 @@ public class DemandaController {
 
     @GetMapping
     public ResponseEntity<Page<BuscaDemandasDTO>> listarDemandas(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
+
         var page = repository.findAllByAtivoTrue(paginacao).map(BuscaDemandasDTO::new);
         return ResponseEntity.ok(page);
-        //paginação controlada pelo parametro size e page Ex.: /medicos?size=10&page=1
-        //ordenação controlada pelo parametro sorted /medicos?sort=nome
+        // paginação controlada pelo parametro size e page Ex.: /medicos?size=10&page=1
+        // ordenação controlada pelo parametro sorted /medicos?sort=nome
     }
 
     @GetMapping("/{id}")
@@ -60,6 +65,7 @@ public class DemandaController {
     @Transactional
     public ResponseEntity excluirDemanda(@PathVariable Long id) {
         var demanda = repository.getReferenceById(id);
+        System.out.println(demanda);
         demanda.excluir();
         return ResponseEntity.noContent().build();
     }

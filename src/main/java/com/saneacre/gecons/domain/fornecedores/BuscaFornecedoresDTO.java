@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-public record BuscaFornecedoresDTO(@NotNull @NotBlank
+public record BuscaFornecedoresDTO(
                                    Long id,
                                    PersonalidadeJuridica tipo,
                                    @NotBlank

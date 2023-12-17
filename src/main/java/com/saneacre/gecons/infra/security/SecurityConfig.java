@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.saneacre.gecons.infra.config.WebConfig;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -29,6 +31,7 @@ public class SecurityConfig {
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
                     req.anyRequest().authenticated();
                 })
+                .cors((cors) -> cors.configurationSource(null))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

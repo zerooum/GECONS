@@ -27,7 +27,7 @@ public class ContratoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private TiposContrato tipo;
 
     @Column(unique = true)
@@ -63,6 +63,7 @@ public class ContratoEntity {
         this.numero = dados.numero();
         this.objeto = dados.objeto();
         this.dataAssinatura = dados.dataAssinatura();
+        this.valor = dados.valor();
         this.dataVigencia = dados.dataVigencia();
         this.numeroSei = dados.numeroSei();
         this.portaria = dados.portaria();

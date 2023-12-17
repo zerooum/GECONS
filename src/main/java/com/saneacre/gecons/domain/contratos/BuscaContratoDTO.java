@@ -10,7 +10,6 @@ import java.util.Date;
 
 public record BuscaContratoDTO(
 
-        @NotNull @NotBlank
         Long id,
         TiposContrato tipo,
         @NotBlank
