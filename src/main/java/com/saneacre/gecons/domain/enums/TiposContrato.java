@@ -10,6 +10,15 @@ public enum TiposContrato {
         this.descricao = descricao;
     }
 
+    public static TiposContrato fromString(String texto) {
+        for (TiposContrato contrato : TiposContrato.values()) {
+            if (contrato.descricao.equalsIgnoreCase(texto)) {
+                return contrato;
+            }
+        }
+        throw new IllegalArgumentException("Nenhum tipo de contrato com esse nome!");
+    }
+
     public String getDescricao() {
         return descricao;
     }

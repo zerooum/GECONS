@@ -17,6 +17,15 @@ public enum Unidades {
         this.descricao = descricao;
     }
 
+    public static Unidades fromString(String texto) {
+        for (Unidades unidade : Unidades.values()) {
+            if (unidade.descricao.equalsIgnoreCase(texto)) {
+                return unidade;
+            }
+        }
+        throw new IllegalArgumentException("Nenhuma unidade com esse nome!");
+    }
+
     public String getDescricao() {
         return descricao;
     }

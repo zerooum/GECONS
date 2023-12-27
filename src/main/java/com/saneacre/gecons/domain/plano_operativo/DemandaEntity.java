@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.demanda;
+package com.saneacre.gecons.domain.plano_operativo;
 
 import com.saneacre.gecons.domain.enums.Grupos;
 import com.saneacre.gecons.domain.enums.TiposDemanda;
@@ -65,13 +65,13 @@ public class DemandaEntity {
             this.nome = dados.nome();
         }
         if (dados.unidade() != null) {
-            this.unidade = dados.unidade();
+            this.unidade = Unidades.fromString(dados.unidade());
         }
         if (dados.tipo() != null) {
-            this.tipo = dados.tipo();
+            this.tipo = TiposDemanda.fromString(dados.tipo());
         }
         if (dados.grupo() != null) {
-            this.grupo = dados.grupo();
+            this.grupo = Grupos.fromString(dados.grupo());
         }
         if (dados.quantidade() != null) {
             this.quantidade = dados.quantidade();

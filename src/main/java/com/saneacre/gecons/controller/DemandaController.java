@@ -1,12 +1,9 @@
 package com.saneacre.gecons.controller;
 
-import com.saneacre.gecons.domain.demanda.CriaDemandaDTO;
-import com.saneacre.gecons.domain.demanda.BuscaDemandasDTO;
-import com.saneacre.gecons.domain.demanda.DemandaEntity;
-import com.saneacre.gecons.domain.demanda.DemandaRepository;
-import com.saneacre.gecons.domain.enums.Grupos;
-import com.saneacre.gecons.domain.enums.TiposDemanda;
-import com.saneacre.gecons.domain.enums.Unidades;
+import com.saneacre.gecons.domain.plano_operativo.CriaDemandaDTO;
+import com.saneacre.gecons.domain.plano_operativo.BuscaDemandasDTO;
+import com.saneacre.gecons.domain.plano_operativo.DemandaEntity;
+import com.saneacre.gecons.domain.plano_operativo.DemandaRepository;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +36,7 @@ public class DemandaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<BuscaDemandasDTO>> listarDemandas(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
+    public ResponseEntity<Page<BuscaDemandasDTO>> listarDemandas(@PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
 
         var page = repository.findAllByAtivoTrue(paginacao).map(BuscaDemandasDTO::new);
         return ResponseEntity.ok(page);

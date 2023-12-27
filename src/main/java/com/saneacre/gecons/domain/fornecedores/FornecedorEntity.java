@@ -1,6 +1,5 @@
 package com.saneacre.gecons.domain.fornecedores;
 
-import com.saneacre.gecons.domain.demanda.BuscaDemandasDTO;
 import com.saneacre.gecons.domain.enums.PersonalidadeJuridica;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

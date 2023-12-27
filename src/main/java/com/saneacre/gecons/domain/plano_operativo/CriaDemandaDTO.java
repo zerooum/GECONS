@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.demanda;
+package com.saneacre.gecons.domain.plano_operativo;
 
 import com.saneacre.gecons.domain.enums.Grupos;
 import com.saneacre.gecons.domain.enums.TiposDemanda;

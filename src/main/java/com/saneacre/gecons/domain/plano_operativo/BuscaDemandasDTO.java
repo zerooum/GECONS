@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.demanda;
+package com.saneacre.gecons.domain.plano_operativo;
 
 import com.saneacre.gecons.domain.enums.Grupos;
 import com.saneacre.gecons.domain.enums.TiposDemanda;
@@ -11,15 +11,16 @@ import java.math.BigDecimal;
 public record BuscaDemandasDTO(Long id,
                                @NotBlank
                                String nome,
-                               Unidades unidade,
-                               TiposDemanda tipo,
-                               Grupos grupo,
+                               String unidade,
+                               String tipo,
+                               String grupo,
                                @PositiveOrZero
                                BigDecimal quantidade) {
 
     public BuscaDemandasDTO(DemandaEntity demanda){
-        this(demanda.getId(), demanda.getNome(), demanda.getUnidade(), demanda.getTipo(), demanda.getGrupo(),
-                demanda.getQuantidade());
+        this(demanda.getId(), demanda.getNome(), demanda.getUnidade().getDescricao(), demanda.getTipo().getDescricao(),
+                demanda.getGrupo().getDescricao(), demanda.getQuantidade());
     }
+
 
 }
