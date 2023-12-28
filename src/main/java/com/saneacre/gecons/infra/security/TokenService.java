@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.saneacre.gecons.domain.usuario.UsuarioEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -49,7 +50,8 @@ public class TokenService {
                     .verify(tokenJWT)
                     .getSubject();
         } catch (JWTVerificationException exception){
-            throw new RuntimeException("Token jwt inválido ou expirado!", exception);
+            throw new AuthenticationException("Token jwt inválido ou expirado!") {
+            };
         }
     }
 

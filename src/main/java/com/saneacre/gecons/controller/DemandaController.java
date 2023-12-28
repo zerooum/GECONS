@@ -62,7 +62,6 @@ public class DemandaController {
     @Transactional
     public ResponseEntity excluirDemanda(@PathVariable Long id) {
         var demanda = repository.getReferenceById(id);
-        System.out.println(demanda);
         demanda.excluir();
         return ResponseEntity.noContent().build();
     }

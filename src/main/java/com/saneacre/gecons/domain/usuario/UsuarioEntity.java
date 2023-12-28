@@ -30,14 +30,27 @@ public class UsuarioEntity implements UserDetails {
 
         private String senha;
 
+        @Enumerated(EnumType.STRING)
+        private UsuarioRoles role;
+
         @CreationTimestamp
         @Temporal(TemporalType.TIMESTAMP)
         @Column(updatable = false)
         private Date ts_criacao;
 
+        public UsuarioEntity(String login, String senha, UsuarioRoles role) {
+            this.login = login;
+            this.senha = senha;
+            this.role = role;
+        }
+
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
+            if(this.role == UsuarioRoles.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
+                                                               new SimpleGrantedAuthority("ROLE_USER"));
+
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+//            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
 
         @Override
