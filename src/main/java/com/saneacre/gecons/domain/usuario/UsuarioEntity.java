@@ -1,5 +1,7 @@
 package com.saneacre.gecons.domain.usuario;
 
+import com.saneacre.gecons.domain.usuario.sistemas_permissoes.SistemaEntity;
+import com.saneacre.gecons.domain.usuario.sistemas_permissoes.UsuarioSistemaPermissaoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Table(name = "usuarios")
 @Entity(name = "Usuario")
@@ -30,15 +33,17 @@ public class UsuarioEntity implements UserDetails {
 
         private String senha;
 
-        @Enumerated(EnumType.STRING)
-        private UsuarioRoles role;
+        private String role;
 
         @CreationTimestamp
         @Temporal(TemporalType.TIMESTAMP)
         @Column(updatable = false)
         private Date ts_criacao;
 
-        public UsuarioEntity(String login, String senha, UsuarioRoles role) {
+        @OneToMany(mappedBy = "usuario")
+        Set<UsuarioSistemaPermissaoEntity> usuarios;
+
+        public UsuarioEntity(String login, String senha, String role) {
             this.login = login;
             this.senha = senha;
             this.role = role;
@@ -46,7 +51,7 @@ public class UsuarioEntity implements UserDetails {
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            if(this.role == UsuarioRoles.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
+            if(this.role == "ADMIN") return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
                                                                new SimpleGrantedAuthority("ROLE_USER"));
 
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));

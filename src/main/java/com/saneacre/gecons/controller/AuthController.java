@@ -4,7 +4,6 @@ import com.saneacre.gecons.domain.usuario.*;
 import com.saneacre.gecons.infra.security.TokenJWTDTO;
 import com.saneacre.gecons.infra.security.TokenService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,13 +41,12 @@ public class AuthController {
         if(repository.findByLogin(dados.login()) != null) return ResponseEntity.badRequest().build();
         boolean primeiroUsuario = repository.count() == 0;
         String senhaCriptografada = new BCryptPasswordEncoder().encode(dados.senha());
-        System.out.println(senhaCriptografada);
         UsuarioEntity novoUsuario;
 
         if (primeiroUsuario) {
-            novoUsuario = new UsuarioEntity(dados.login(), senhaCriptografada, UsuarioRoles.ADMIN);
+            novoUsuario = new UsuarioEntity(dados.login(), senhaCriptografada, "ADMIN");
         } else {
-            novoUsuario = new UsuarioEntity(dados.login(), senhaCriptografada, UsuarioRoles.USUARIO);
+            novoUsuario = new UsuarioEntity(dados.login(), senhaCriptografada, "USUARIO");
         }
 
         this.repository.save(novoUsuario);
