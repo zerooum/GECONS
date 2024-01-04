@@ -1,5 +1,6 @@
-package com.saneacre.gecons.domain.usuario.sistemas_permissoes;
+package com.saneacre.gecons.domain.usuario.sistemas_permissoes.permissoes;
 
+import com.saneacre.gecons.domain.usuario.sistemas_permissoes.UsuarioSistemaPermissaoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

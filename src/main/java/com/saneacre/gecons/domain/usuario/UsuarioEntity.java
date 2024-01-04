@@ -1,6 +1,5 @@
 package com.saneacre.gecons.domain.usuario;
 
-import com.saneacre.gecons.domain.usuario.sistemas_permissoes.SistemaEntity;
 import com.saneacre.gecons.domain.usuario.sistemas_permissoes.UsuarioSistemaPermissaoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -49,7 +48,7 @@ public class UsuarioEntity implements UserDetails {
             this.role = role;
         }
 
-        @Override
+    @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
             if(this.role == "ADMIN") return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
                                                                new SimpleGrantedAuthority("ROLE_USER"));
