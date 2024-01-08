@@ -1,5 +1,6 @@
-package com.saneacre.gecons.domain.usuario;
+package com.saneacre.gecons.domain.usuario.auth_registro;
 
+import com.saneacre.gecons.domain.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

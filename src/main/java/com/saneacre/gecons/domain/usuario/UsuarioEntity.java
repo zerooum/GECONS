@@ -1,20 +1,21 @@
 package com.saneacre.gecons.domain.usuario;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.saneacre.gecons.domain.usuario.sistemas_permissoes.UsuarioSistemaPermissaoEntity;
+import com.saneacre.gecons.domain.usuario.sistemas_permissoes.sistemas.SistemaEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Table(name = "usuarios")
 @Entity(name = "Usuario")
@@ -39,8 +40,8 @@ public class UsuarioEntity implements UserDetails {
         @Column(updatable = false)
         private Date ts_criacao;
 
-        @OneToMany(mappedBy = "usuario")
-        Set<UsuarioSistemaPermissaoEntity> usuarios;
+        @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+        Set<UsuarioSistemaPermissaoEntity> usuario_permissao_sistema;
 
         public UsuarioEntity(String login, String senha, String role) {
             this.login = login;
@@ -48,13 +49,28 @@ public class UsuarioEntity implements UserDetails {
             this.role = role;
         }
 
-    @Override
+        @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            if(this.role == "ADMIN") return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
-                                                               new SimpleGrantedAuthority("ROLE_USER"));
+            if(Objects.equals(this.role, "ADMIN"))  {
+                return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            }
 
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-//            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+            if (usuario_permissao_sistema.isEmpty()) return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+
+            // pega sistemas que o usuario tem acesso
+            var permissoes = new ArrayList<>(
+                                      usuario_permissao_sistema.stream().map(UsuarioSistemaPermissaoEntity::getSistema)
+                                     .map(SistemaEntity::getNome).distinct().map(nomeSistema -> "ROLE_" + nomeSistema)
+                                     .map(SimpleGrantedAuthority::new).toList()
+                                      );
+
+            // pega permissões que o usuario tem em cada sistema
+            usuario_permissao_sistema.forEach(s -> {
+                var permissao = "ROLE_" + s.getSistema().getNome() + "_" + s.getPermissao().getNome();
+                permissoes.add(new SimpleGrantedAuthority(permissao));
+            });
+
+            return permissoes;
         }
 
         @Override

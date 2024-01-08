@@ -37,11 +37,8 @@ public class DemandaController {
 
     @GetMapping
     public ResponseEntity<Page<BuscaDemandasDTO>> listarDemandas(@PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
-
         var page = repository.findAllByAtivoTrue(paginacao).map(BuscaDemandasDTO::new);
         return ResponseEntity.ok(page);
-        // paginação controlada pelo parametro size e page Ex.: /medicos?size=10&page=1
-        // ordenação controlada pelo parametro sorted /medicos?sort=nome
     }
 
     @GetMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.saneacre.gecons.infra.security;
 
 import com.saneacre.gecons.domain.usuario.UsuarioRepository;
+import com.saneacre.gecons.domain.usuario.UsuarioService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,10 @@ public class SecurityFilter extends OncePerRequestFilter {
     private TokenService tokenService;
 
     @Autowired
-    private UsuarioRepository repository;
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -30,7 +34,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         var tokenJWT = tokenService.recuperarToken(request);
         if (tokenJWT != null) {
             var subject = tokenService.getTokenSubject(tokenJWT);
-            var usuario = repository.findByLogin(subject);
+            var usuario = usuarioRepository.findByLogin(subject);
 
             var auth = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -38,4 +42,5 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
 }

@@ -1,12 +1,9 @@
 package com.saneacre.gecons.domain.usuario.sistemas_permissoes.permissoes;
 
-import com.saneacre.gecons.domain.usuario.UsuarioEntity;
-import com.saneacre.gecons.domain.usuario.sistemas_permissoes.permissoes.PermissaoEntity;
-import com.saneacre.gecons.domain.usuario.sistemas_permissoes.sistemas.SistemaEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record AdicionaPermissaoDTO(
+public record ConcedePermissaoDTO(
 
         @NotNull @NotBlank
         String usuario,

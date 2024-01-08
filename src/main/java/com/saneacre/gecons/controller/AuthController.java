@@ -1,6 +1,8 @@
 package com.saneacre.gecons.controller;
 
 import com.saneacre.gecons.domain.usuario.*;
+import com.saneacre.gecons.domain.usuario.auth_registro.AutenticacaoDTO;
+import com.saneacre.gecons.domain.usuario.auth_registro.RegistroDTO;
 import com.saneacre.gecons.infra.security.TokenJWTDTO;
 import com.saneacre.gecons.infra.security.TokenService;
 import jakarta.validation.Valid;
