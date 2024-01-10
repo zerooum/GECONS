@@ -5,6 +5,7 @@ import com.saneacre.gecons.domain.usuario.auth_registro.AutenticacaoDTO;
 import com.saneacre.gecons.domain.usuario.auth_registro.RegistroDTO;
 import com.saneacre.gecons.infra.security.TokenJWTDTO;
 import com.saneacre.gecons.infra.security.TokenService;
+import com.saneacre.gecons.utils.RespostaSimplesDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity registraUsuario(@RequestBody @Valid RegistroDTO dados) {
-        if(repository.findByLogin(dados.login()) != null) return ResponseEntity.badRequest().build();
+        if(repository.findByLogin(dados.login()) != null) {
+            return ResponseEntity.badRequest().body(new RespostaSimplesDTO("O usuário já existe!"));
+        }
         boolean primeiroUsuario = repository.count() == 0;
         String senhaCriptografada = new BCryptPasswordEncoder().encode(dados.senha());
         UsuarioEntity novoUsuario;
@@ -52,6 +55,6 @@ public class AuthController {
         }
 
         this.repository.save(novoUsuario);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new RespostaSimplesDTO("Usuário criado com sucesso!"));
     }
 }

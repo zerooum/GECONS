@@ -19,6 +19,7 @@ import com.saneacre.gecons.infra.config.WebConfig;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
