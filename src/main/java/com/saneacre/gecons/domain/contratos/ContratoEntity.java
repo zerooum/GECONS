@@ -1,11 +1,7 @@
 package com.saneacre.gecons.domain.contratos;
 
 import com.saneacre.gecons.domain.enums.TiposContrato;
-import com.saneacre.gecons.domain.fornecedores.BuscaFornecedoresDTO;
-import com.saneacre.gecons.domain.fornecedores.CriaFornecedorDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,7 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Table(name = "contratos")
 @Entity(name = "Contrato")
@@ -34,12 +31,12 @@ public class ContratoEntity {
     private String numero;
 
     private String objeto;
-    private Date dataAssinatura;
+    private LocalDate dataAssinatura;
 
     @Column(precision = 12, scale = 2)
     private BigDecimal valor;
 
-    private Date dataVigencia;
+    private LocalDate dataVigencia;
     private String numeroSei;
     private String portaria;
     private String fiscalTitular;
@@ -52,11 +49,11 @@ public class ContratoEntity {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)
-    private Date ts_criacao;
+    private LocalDateTime ts_criacao;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date ts_modificacao;
+    private LocalDateTime ts_modificacao;
 
     public ContratoEntity(CriaContratoDTO dados) {
         this.tipo = dados.tipo();
@@ -74,7 +71,7 @@ public class ContratoEntity {
         this.ativo = true;
     }
 
-    public void atualizar(BuscaContratoDTO dados) {
+    public void atualizar(AtualizaContratoDTO dados) {
 
         if (dados.tipo() != null) {
             this.tipo = dados.tipo();

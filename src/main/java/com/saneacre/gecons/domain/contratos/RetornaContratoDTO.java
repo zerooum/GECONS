@@ -1,34 +1,29 @@
 package com.saneacre.gecons.domain.contratos;
 
 import com.saneacre.gecons.domain.enums.TiposContrato;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
-public record BuscaContratoDTO(
+public record RetornaContratoDTO(
 
         Long id,
         TiposContrato tipo,
-        @NotBlank
         String numero,
-        @NotBlank
         String objeto,
-        Date dataAssinatura,
-        @Positive
+        LocalDate dataAssinatura,
         BigDecimal valor,
-        Date dataVigencia,
+        LocalDate dataVigencia,
         String numeroSei,
         String portaria,
         String fiscalTitular,
         String fiscalSubstituto,
         String gestorTitular,
         String gestorSubstituto
+
 ) {
 
-    public BuscaContratoDTO(ContratoEntity contrato) {
+    public RetornaContratoDTO(ContratoEntity contrato) {
         this(contrato.getId(), contrato.getTipo(), contrato.getNumero(), contrato.getObjeto(),
                 contrato.getDataAssinatura(), contrato.getValor(), contrato.getDataVigencia(), contrato.getNumeroSei(),
                 contrato.getPortaria(), contrato.getFiscalTitular(), contrato.getFiscalSubstituto(),

@@ -9,20 +9,16 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record CriaContratoDTO(
+public record AtualizaContratoDTO(
 
-        @NotNull
         TiposContrato tipo,
-        @NotNull @NotBlank
+        @Size(min = 1, message = "O numero do contrato não pode estar em branco!")
         String numero,
-        @NotNull @NotBlank
         @Size(min = 10, message = "O objeto não pode estar em branco e precisa ter pelo menos 10 caracteres")
         String objeto,
-        @NotNull
         LocalDate dataAssinatura,
-        @Positive
+        @Positive(message = "O valor do contrato precisa ser positivo!")
         BigDecimal valor,
-        @NotNull
         LocalDate dataVigencia,
         String numeroSei,
         String portaria,
@@ -30,5 +26,5 @@ public record CriaContratoDTO(
         String fiscalSubstituto,
         String gestorTitular,
         String gestorSubstituto
-        ) {
+) {
 }
