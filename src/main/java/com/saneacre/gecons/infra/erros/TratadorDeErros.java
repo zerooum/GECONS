@@ -1,5 +1,6 @@
 package com.saneacre.gecons.infra.erros;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.DateTimeException;
 import java.time.Instant;
+import java.util.Arrays;
 
 @RestControllerAdvice
 public class TratadorDeErros {
@@ -27,14 +29,28 @@ public class TratadorDeErros {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErroPadrao> trataErroIntegridade(DataIntegrityViolationException e, HttpServletRequest request) {
-        ErroPadrao err = this.montaErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getRootCause().getMessage(), request);
+        ErroPadrao err = this.montaErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMostSpecificCause().getMessage(), request);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErroPadrao> trataErroParse(HttpMessageNotReadableException e, HttpServletRequest request) {
-        ErroPadrao err = this.montaErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getRootCause().getMessage(), request);
-        if (e.getRootCause() instanceof DateTimeException) err.setMessage("Data inválida!");
+        ErroPadrao err = this.montaErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMostSpecificCause().getMessage(), request);
+
+        if (e.getMostSpecificCause() instanceof DateTimeException) err.setMessage("Data inválida!");
+        if (e.getMostSpecificCause() instanceof InvalidFormatException) {
+
+            StringBuilder valoresEnum = new StringBuilder();
+            if (((InvalidFormatException) e.getMostSpecificCause()).getTargetType().isEnum()) {
+                var enumValues = ((InvalidFormatException) e.getMostSpecificCause()).getTargetType().getEnumConstants();
+                for (Object enumValue : enumValues) {
+                    valoresEnum.append(" ");
+                    valoresEnum.append(enumValue);
+                }
+            }
+            err.setMessage("Valor inválido para o campo! Valores aceitos:" + valoresEnum);
+        }
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
@@ -47,7 +63,9 @@ public class TratadorDeErros {
 
     @ExceptionHandler(UsuarioJaAdminException.class)
     public ResponseEntity<ErroPadrao> trataErroUsuarioJaAdmin(HttpServletRequest request) {
-        ErroPadrao err = this.montaErroPadrao(HttpStatus.NOT_ACCEPTABLE.value(), "Usuario do tipo ADMIN não precisa receber acessos especiais", request);
+        ErroPadrao err = this.montaErroPadrao(HttpStatus.NOT_ACCEPTABLE.value(),
+                                         "Usuario do tipo ADMIN não precisa receber acessos especiais",
+                                              request);
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(err);
     }
 

@@ -3,21 +3,18 @@ package com.saneacre.gecons.domain.plano_operativo;
 import com.saneacre.gecons.domain.enums.Grupos;
 import com.saneacre.gecons.domain.enums.TiposDemanda;
 import com.saneacre.gecons.domain.enums.Unidades;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
-public record CriaDemandaDTO(
+public record AtualizaDemandaDTO(
 
-        @NotNull @NotBlank
+        @Pattern(regexp = "^(?!\\s*$).+", message = "O nome do item não pode estar em branco!")
         String nome,
-        @NotNull
         Unidades unidade,
-        @NotNull
         TiposDemanda tipo,
-        @NotNull
         Grupos grupo,
         @PositiveOrZero(message = "A quantidade precisa ser zero ou positiva!")
         BigDecimal quantidade) {

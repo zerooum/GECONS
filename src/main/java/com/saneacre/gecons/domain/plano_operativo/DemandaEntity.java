@@ -12,7 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Table(name = "demandas")
 @Entity(name = "Demanda")
@@ -45,11 +45,11 @@ public class DemandaEntity {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)
-    private Date ts_criacao;
+    private LocalDateTime ts_criacao;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date ts_modificacao;
+    private LocalDateTime ts_modificacao;
 
     public DemandaEntity(CriaDemandaDTO dados) {
         this.nome = dados.nome();
@@ -60,18 +60,18 @@ public class DemandaEntity {
         this.ativo = true;
     }
 
-    public void atualizar(BuscaDemandasDTO dados) {
+    public void atualizar(AtualizaDemandaDTO dados) {
         if (dados.nome() != null) {
             this.nome = dados.nome();
         }
         if (dados.unidade() != null) {
-            this.unidade = Unidades.fromString(dados.unidade());
+            this.unidade = dados.unidade();
         }
         if (dados.tipo() != null) {
-            this.tipo = TiposDemanda.fromString(dados.tipo());
+            this.tipo = dados.tipo();
         }
         if (dados.grupo() != null) {
-            this.grupo = Grupos.fromString(dados.grupo());
+            this.grupo = dados.grupo();
         }
         if (dados.quantidade() != null) {
             this.quantidade = dados.quantidade();

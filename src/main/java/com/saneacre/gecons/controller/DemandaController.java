@@ -1,10 +1,8 @@
 package com.saneacre.gecons.controller;
 
-import com.saneacre.gecons.domain.plano_operativo.CriaDemandaDTO;
-import com.saneacre.gecons.domain.plano_operativo.BuscaDemandasDTO;
-import com.saneacre.gecons.domain.plano_operativo.DemandaEntity;
-import com.saneacre.gecons.domain.plano_operativo.DemandaRepository;
+import com.saneacre.gecons.domain.plano_operativo.*;
 
+import com.saneacre.gecons.utils.RespostaSimplesDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,51 +20,45 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class DemandaController {
 
     @Autowired
-    private DemandaRepository repository;
+    private DemandaService service;
 
     @PostMapping
     @Transactional
     @PreAuthorize("hasRole('PLANO_OPERATIVO_INSERIR') or hasRole('ADMIN')")
-    public ResponseEntity cadastrarDemanda(@RequestBody @Valid CriaDemandaDTO dados, UriComponentsBuilder uriBuilder) {
-
-        var demanda = new DemandaEntity(dados);
-        repository.save(demanda);
-
+    public ResponseEntity<RetornaDemandaDTO> cadastrarDemanda(@RequestBody @Valid CriaDemandaDTO dados, UriComponentsBuilder uriBuilder) {
+        var demanda = service.cadastrarDemanda(dados);
         var uri = uriBuilder.path("/demandas/{id}").buildAndExpand(demanda.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(demanda);
-
+        return ResponseEntity.created(uri).body(new RetornaDemandaDTO(demanda));
     }
 
     @PreAuthorize("hasRole('PLANO_OPERATIVO_VISUALIZAR') or hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<Page<BuscaDemandasDTO>> listarDemandas(@PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(BuscaDemandasDTO::new);
-        return ResponseEntity.ok(page);
+    public ResponseEntity<Page<RetornaDemandaDTO>> listarDemandas(@PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+        var pageDemandas = service.buscaTodasDemandas(paginacao);
+        return ResponseEntity.ok(pageDemandas);
+
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('PLANO_OPERATIVO_VISUALIZAR') or hasRole('ADMIN')")
-    public ResponseEntity detalhaDemanda(@PathVariable Long id) {
-        var demanda = repository.getReferenceById(id);
-        return ResponseEntity.ok(new BuscaDemandasDTO(demanda));
+    public ResponseEntity<RetornaDemandaDTO> detalhaDemanda(@PathVariable Long id) {
+        var demanda = service.buscaDemandaPorId(id);
+        return ResponseEntity.ok(new RetornaDemandaDTO(demanda));
     }
 
     @PutMapping("/{id}")
     @Transactional
-    @PreAuthorize("hasRole('PLANO_ATUALIZAR') or hasRole('ADMIN')")
-    public ResponseEntity autalizarDemanda(@RequestBody @Valid BuscaDemandasDTO dados, @PathVariable Long id) {
-        var demanda = repository.getReferenceById(id);
-        demanda.atualizar(dados);
-        return ResponseEntity.ok(new BuscaDemandasDTO(demanda));
+    @PreAuthorize("hasRole('PLANO_OPERATIVO_ATUALIZAR') or hasRole('ADMIN')")
+    public ResponseEntity<RetornaDemandaDTO> autalizarDemanda(@RequestBody @Valid AtualizaDemandaDTO dados, @PathVariable Long id) {
+        var demandaAtualizada = service.atualizarDemanda(dados, id);
+        return ResponseEntity.ok(new RetornaDemandaDTO(demandaAtualizada));
     }
 
-    @PreAuthorize("hasRole('PLANO_DELETAR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PLANO_OPERATIVO_DELETAR') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity excluirDemanda(@PathVariable Long id) {
-        var demanda = repository.getReferenceById(id);
-        demanda.excluir();
-        return ResponseEntity.noContent().build();
+        service.exluirDemanda(id);
+        return ResponseEntity.ok().body(new RespostaSimplesDTO("Contrato com id " + id + " excluido!"));
     }
 }
