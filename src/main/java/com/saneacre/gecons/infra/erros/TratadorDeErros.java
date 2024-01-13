@@ -69,6 +69,14 @@ public class TratadorDeErros {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(err);
     }
 
+    @ExceptionHandler(UsuarioJaExisteException.class)
+    public ResponseEntity<ErroPadrao> trataErroUsuarioJaExiste(HttpServletRequest request) {
+        ErroPadrao err = this.montaErroPadrao(HttpStatus.BAD_REQUEST.value(),
+                "Nome de usuario já existe! Tente outro.",
+                request);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity trataErro400(MethodArgumentNotValidException ex) {
         var erros = ex.getFieldErrors();

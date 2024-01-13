@@ -1,6 +1,5 @@
-package com.saneacre.gecons.domain.usuario.auth_registro;
+package com.saneacre.gecons.domain.autenticacao_registro;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
