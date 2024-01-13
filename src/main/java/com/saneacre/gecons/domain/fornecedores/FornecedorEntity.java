@@ -55,7 +55,7 @@ public class FornecedorEntity {
         this.ativo = true;
     }
 
-    public void atualizar(BuscaFornecedoresDTO dados) {
+    public void atualizar(AtualizaFornecedorDTO dados) {
 
         if (dados.tipo() != null) {
             this.tipo = dados.tipo();

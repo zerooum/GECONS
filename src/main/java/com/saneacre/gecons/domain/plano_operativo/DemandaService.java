@@ -23,19 +23,31 @@ public class DemandaService {
     }
 
     public DemandaEntity buscaDemandaPorId(Long id) {
-        return repository.getReferenceById(id);
+        var demanda = repository.findById(id);
+        if (demanda.isPresent()) {
+            if (!demanda.get().getAtivo()) throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+            return demanda.get();
+        }
+        throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
     }
 
     public DemandaEntity atualizarDemanda(AtualizaDemandaDTO dados, Long id) {
-        var demanda = repository.getReferenceById(id);
-        if (!demanda.getAtivo()) throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
-        demanda.atualizar(dados);
-        return demanda;
+        var demanda = repository.findById(id);
+        if (demanda.isPresent()) {
+            if (!demanda.get().getAtivo()) throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+            demanda.get().atualizar(dados);
+            return demanda.get();
+        }
+        throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
     }
 
-    public void exluirDemanda(Long id) {
-        var demanda = repository.getReferenceById(id);
-        if (!demanda.getAtivo()) throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
-        demanda.excluir();
+    public void excluirDemanda(Long id) {
+        var demanda = repository.findById(id);
+        if (demanda.isPresent()) {
+            if (!demanda.get().getAtivo()) throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+            demanda.get().excluir();
+            return;
+        }
+        throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
     }
 }

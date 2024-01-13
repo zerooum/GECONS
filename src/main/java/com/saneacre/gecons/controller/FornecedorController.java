@@ -1,9 +1,7 @@
 package com.saneacre.gecons.controller;
 
-import com.saneacre.gecons.domain.fornecedores.BuscaFornecedoresDTO;
-import com.saneacre.gecons.domain.fornecedores.CriaFornecedorDTO;
-import com.saneacre.gecons.domain.fornecedores.FornecedorEntity;
-import com.saneacre.gecons.domain.fornecedores.FornecedorRepository;
+import com.saneacre.gecons.domain.fornecedores.*;
+import com.saneacre.gecons.utils.RespostaSimplesDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,52 +19,46 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class FornecedorController {
 
     @Autowired
-    private FornecedorRepository repository;
+    private FornecedorService service;
 
     @PostMapping
     @Transactional
     @PreAuthorize("hasRole('FORNECEDORES_INSERIR') or hasRole('ADMIN')")
-    public ResponseEntity cadastrarFornecedor(@RequestBody @Valid CriaFornecedorDTO dados, UriComponentsBuilder uriBuilder) {
-
-        var fornecedor = new FornecedorEntity(dados);
-        repository.save(fornecedor);
-
+    public ResponseEntity<RetornaFornecedorDTO> cadastrarFornecedor(@RequestBody @Valid CriaFornecedorDTO dados, UriComponentsBuilder uriBuilder) {
+        var fornecedor = service.cadastrarFornecedor(dados);
         var uri = uriBuilder.path("/fornecedores/{id}").buildAndExpand(fornecedor.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(fornecedor);
+        return ResponseEntity.created(uri).body(new RetornaFornecedorDTO(fornecedor));
 
     }
 
     @GetMapping
     @PreAuthorize("hasRole('FORNECEDORES_VISUALIZAR') or hasRole('ADMIN')")
-    public ResponseEntity<Page<BuscaFornecedoresDTO>> listarFornecedores(@PageableDefault(size = 10,
+    public ResponseEntity<Page<RetornaFornecedorDTO>> listarFornecedores(@PageableDefault(size = 10,
             sort = {"nome"}) Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(BuscaFornecedoresDTO::new);
-        return ResponseEntity.ok(page);
+        var pageFornecedores = service.buscaTodosFornecedores(paginacao);
+        return ResponseEntity.ok(pageFornecedores);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('FORNECEDORES_VISUALIZAR') or hasRole('ADMIN')")
-    public ResponseEntity detalhaFornecedor(@PathVariable Long id) {
-        var fornecedor = repository.getReferenceById(id);
-        return ResponseEntity.ok(new BuscaFornecedoresDTO(fornecedor));
+    public ResponseEntity<RetornaFornecedorDTO> detalhaFornecedor(@PathVariable Long id) {
+        var fornecedor = service.buscaFornecedorPorId(id);
+        return ResponseEntity.ok(new RetornaFornecedorDTO(fornecedor));
     }
 
     @PutMapping("/{id}")
     @Transactional
     @PreAuthorize("hasRole('FORNECEDORES_ATUALIZAR') or hasRole('ADMIN')")
-    public ResponseEntity autalizarFornecedor(@RequestBody @Valid BuscaFornecedoresDTO dados, @PathVariable Long id) {
-        var fornecedor = repository.getReferenceById(id);
-        fornecedor.atualizar(dados);
-        return ResponseEntity.ok(new BuscaFornecedoresDTO(fornecedor));
+    public ResponseEntity<RetornaFornecedorDTO> autalizarFornecedor(@RequestBody @Valid AtualizaFornecedorDTO dados, @PathVariable Long id) {
+        var fornecedor = service.atualizaFornecedor(dados, id);
+        return ResponseEntity.ok(new RetornaFornecedorDTO(fornecedor));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     @PreAuthorize("hasRole('FORNECEDORES_DELETAR') or hasRole('ADMIN')")
-    public ResponseEntity excluirFornecedor(@PathVariable Long id) {
-        var fornecedor = repository.getReferenceById(id);
-        fornecedor.excluir();
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<RespostaSimplesDTO> excluirFornecedor(@PathVariable Long id) {
+        service.deletaContrato(id);
+        return ResponseEntity.ok().body(new RespostaSimplesDTO("Fornecedor com id " + id + " excluido!"));
     }
 }

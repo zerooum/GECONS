@@ -1,14 +1,13 @@
 package com.saneacre.gecons.domain.fornecedores;
 
 import com.saneacre.gecons.domain.enums.PersonalidadeJuridica;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 
-public record CriaFornecedorDTO(
-        @NotNull
+public record AtualizaFornecedorDTO(
         PersonalidadeJuridica tipo,
-        @NotNull @NotBlank
+        @Pattern(regexp = "^(?!\\s*$).+", message = "O nome do fornecedor não pode estar em branco!")
         String nome,
-        @NotNull @NotBlank
         @Pattern(regexp = "^(\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}|\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2})$",
                 message = "CPF/CNPJ inválido")
         String documento,

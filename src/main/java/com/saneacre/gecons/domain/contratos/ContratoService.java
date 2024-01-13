@@ -23,16 +23,22 @@ public class ContratoService {
     }
 
     public ContratoEntity atualizarContrato(Long id, AtualizaContratoDTO dados) {
-        ContratoEntity contrato = repository.getReferenceById(id);
-        if (!contrato.getAtivo()) throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
-        contrato.atualizar(dados);
-        return contrato;
+        var contrato = repository.findById(id);
+        if (contrato.isPresent()) {
+            if (!contrato.get().getAtivo()) throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
+            return contrato.get();
+        }
+        throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
     }
 
     public void deletaContrato(Long id) {
-        ContratoEntity contrato = repository.getReferenceById(id);
-        if (!contrato.getAtivo()) throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
-        contrato.excluir();
+        var contrato = repository.findById(id);
+        if (contrato.isPresent()) {
+            if (!contrato.get().getAtivo()) throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
+            contrato.get().excluir();
+            return;
+        }
+        throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
     }
 
 

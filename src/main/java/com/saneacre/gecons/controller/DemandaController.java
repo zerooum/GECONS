@@ -57,8 +57,8 @@ public class DemandaController {
     @PreAuthorize("hasRole('PLANO_OPERATIVO_DELETAR') or hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluirDemanda(@PathVariable Long id) {
-        service.exluirDemanda(id);
+    public ResponseEntity<RespostaSimplesDTO> excluirDemanda(@PathVariable Long id) {
+        service.excluirDemanda(id);
         return ResponseEntity.ok().body(new RespostaSimplesDTO("Contrato com id " + id + " excluido!"));
     }
 }

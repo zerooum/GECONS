@@ -43,13 +43,13 @@ public class ContratoController {
     @PreAuthorize("hasRole('CONTRATOS_ATUALIZAR') or hasRole('ADMIN')")
     public ResponseEntity<RetornaContratoDTO> atualizaContrato(@RequestBody @Valid AtualizaContratoDTO dados, @PathVariable Long id){
         ContratoEntity contratoAtualizado = service.atualizarContrato(id, dados);
-        return ResponseEntity.ok().body(new RetornaContratoDTO(contratoAtualizado));
+        return ResponseEntity.ok(new RetornaContratoDTO(contratoAtualizado));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     @PreAuthorize("hasRole('CONTRATOS_DELETAR') or hasRole('ADMIN')")
-    public ResponseEntity deletarContrato(@PathVariable Long id) {
+    public ResponseEntity<RespostaSimplesDTO> deletarContrato(@PathVariable Long id) {
         service.deletaContrato(id);
         return ResponseEntity.ok().body(new RespostaSimplesDTO("Contrato com id " + id + " excluido!"));
     }
