@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class ContratoService {
 
@@ -83,10 +85,29 @@ public class ContratoService {
     public ContratoFornecedorPoEntity adicionaItemNoContrato(ItemNoContratoDTO dados) {
         var contratoFornecedorPo = getContratoFornecedorPo(dados);
 
-        //verifica se o valor do item ultrapassa o valor total do contrato
-
         var jaExiste = contratoFornecedorPoRepository.procuraChaveDuplicada(contratoFornecedorPo.getId());
         if (jaExiste.isPresent()) throw new DataIntegrityViolationException("O item já esta adicionado ao contrato!");
+
+        //verifica se o valor do item ultrapassa o valor total do contrato
+        //calcula valor atual de todos os itens do contrato
+        var contratos = contratoFornecedorPoRepository.findByContrato(contratoFornecedorPo.getContrato());
+        BigDecimal valorTotalAtual = BigDecimal.ZERO;
+        for (var contrato : contratos) {
+            BigDecimal valorItem = contrato.getQuantRegistro().multiply(contrato.getValorUnitario());
+            System.out.println(valorItem);
+            valorTotalAtual = valorTotalAtual.add(valorItem);
+        }
+
+        //calcula valor do item a ser adicionado
+        var quantItemAdicionado = contratoFornecedorPo.getQuantRegistro();
+        var valorUnitarioItemAdicionado = contratoFornecedorPo.getValorUnitario();
+        var valorItemAdicionado = quantItemAdicionado.multiply(valorUnitarioItemAdicionado);
+
+        //compara se a adição do novo item ultrapassa o valor do contrato
+        var novoValorTotal = valorTotalAtual.add(valorItemAdicionado);
+        if (novoValorTotal.compareTo(contratoFornecedorPo.getContrato().getValor()) > 0)
+            throw new DataIntegrityViolationException("Impossível adicionar item no contrato, " +
+                                                      "o item inserido ultrapassa o valor total");
 
         contratoFornecedorPoRepository.save(contratoFornecedorPo);
         return contratoFornecedorPo;
