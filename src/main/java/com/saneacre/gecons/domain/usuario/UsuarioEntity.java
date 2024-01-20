@@ -40,7 +40,7 @@ public class UsuarioEntity implements UserDetails {
         @Column(updatable = false)
         private Date ts_criacao;
 
-        @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+        @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
         Set<UsuarioSistemaPermissaoEntity> usuario_permissao_sistema;
 
         public UsuarioEntity(String login, String senha, String role) {

@@ -1,14 +1,14 @@
 package com.saneacre.gecons.controller;
 
-import com.saneacre.gecons.domain.usuario.BuscaUsuariosDTO;
-import com.saneacre.gecons.domain.usuario.UsuarioRepository;
+import com.saneacre.gecons.domain.usuario.RetornaUsuarioDTO;
 import com.saneacre.gecons.domain.usuario.UsuarioService;
 import com.saneacre.gecons.domain.usuario.sistemas_permissoes.UsuarioSistemaPermissaoRepository;
-import com.saneacre.gecons.domain.usuario.sistemas_permissoes.permissoes.BuscaPermissoesDTO;
-import com.saneacre.gecons.domain.usuario.sistemas_permissoes.permissoes.ConcedePermissaoDTO;
+import com.saneacre.gecons.domain.usuario.sistemas_permissoes.permissoes.RetornaPermissoesDTO;
+import com.saneacre.gecons.domain.usuario.sistemas_permissoes.permissoes.PermissaoDTO;
 import com.saneacre.gecons.domain.usuario.sistemas_permissoes.sistemas.BuscaSistemasDTO;
-import com.saneacre.gecons.infra.erros.UsuarioJaAdminException;
+import com.saneacre.gecons.utils.RespostaSimplesDTO;
 import jakarta.validation.Valid;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.Objects;
-
-
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -30,51 +26,49 @@ public class UsuarioController {
     UsuarioService service;
 
     @Autowired
-    UsuarioRepository usuarioRepository;
-
-    @Autowired
     UsuarioSistemaPermissaoRepository usuarioSistemaPermissaoRepository;
 
     @GetMapping
-    public ResponseEntity<Page<BuscaUsuariosDTO>> listarUsuarios(@PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
-        var page = usuarioRepository.findAll(paginacao).map(BuscaUsuariosDTO::new);
-        return ResponseEntity.ok(page);
+    public ResponseEntity<Page<RetornaUsuarioDTO>> listarUsuarios(@PageableDefault(size = 10, sort = {"id"}) Pageable paginacao) {
+        var usuariosPage = service.buscarTodosUsuarios(paginacao);
+        return ResponseEntity.ok(usuariosPage);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<RespostaSimplesDTO> deletaUsuario(@PathVariable Long id) {
+        service.deletarUsuario(id);
+        return ResponseEntity.ok().body(new RespostaSimplesDTO("Usuario com id " + id + " excluido!"));
     }
 
     @GetMapping("/sistemas")
     public ResponseEntity<BuscaSistemasDTO> recuperaSistemasUsuario(@RequestBody @Valid BuscaSistemasDTO dados) {
         var sistemas = service.getSistemasUsuarios(dados.usuario());
-        var resposta = new BuscaSistemasDTO(dados.usuario(), sistemas);
-        return ResponseEntity.ok(resposta);
+        return ResponseEntity.ok(new BuscaSistemasDTO(dados.usuario(), sistemas));
     }
 
     @GetMapping("/permissoes")
-    public ResponseEntity<BuscaPermissoesDTO> recuperaSistemasUsuario(@RequestBody @Valid BuscaPermissoesDTO dados) {
+    public ResponseEntity<RetornaPermissoesDTO> recuperaSistemasUsuario(@RequestBody @Valid RetornaPermissoesDTO dados) {
         var permissoes = service.getPermissoesUsuarios(dados.usuario());
-        var resposta = new BuscaPermissoesDTO(dados.usuario(), permissoes);
-        return ResponseEntity.ok(resposta);
+        return ResponseEntity.ok(new RetornaPermissoesDTO(dados.usuario(), permissoes));
     }
 
     @PostMapping("/permissoes")
     @Transactional
-    public ResponseEntity adicionaPermissao(@RequestBody @Valid ConcedePermissaoDTO dados) {
-        var usuarioSistemaPermissao = service.getUsuarioSistemaPermissao(dados.usuario(), dados.sistema(), dados.permissao());
-        if (Objects.equals(usuarioSistemaPermissao.getUsuario().getRole(), "ADMIN")) throw new UsuarioJaAdminException();
-
-        usuarioSistemaPermissaoRepository.save(usuarioSistemaPermissao);
-        var resposta = Map.of("Usuario", usuarioSistemaPermissao.getUsuario().getLogin(),
-                              "Sistema", usuarioSistemaPermissao.getSistema().getNome(),
-                              "Permissao", usuarioSistemaPermissao.getPermissao().getNome());
-        return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
+    public ResponseEntity<RespostaSimplesDTO> adicionaPermissao(@RequestBody @Valid PermissaoDTO dados) {
+        var usuarioSistemaPermissao = service.criaUsuarioSistemaPermissao(dados);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new RespostaSimplesDTO("Permissão " + dados.permissao() + " concedida ao usuário "
+                                              + dados.usuario() + " no sistema " + dados.sistema()));
     }
 
     @DeleteMapping("/permissoes")
     @Transactional
-    public ResponseEntity removePermissao(@RequestBody @Valid ConcedePermissaoDTO dados) {
-        var usuarioSistemaPermissao = service.getUsuarioSistemaPermissao(dados.usuario(), dados.sistema(), dados.permissao());
-        usuarioSistemaPermissaoRepository.delete(usuarioSistemaPermissao);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<RespostaSimplesDTO> removePermissao(@RequestBody @Valid PermissaoDTO dados) {
+        service.deletaUsuarioSistemaPermissao(dados);
+        return ResponseEntity.ok()
+                .body(new RespostaSimplesDTO("Permissão " + dados.permissao() + " no sistema " + dados.sistema()
+                                                + " retirada do usuário " + dados.usuario()));
     }
-
 
 }

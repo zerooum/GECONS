@@ -21,10 +21,13 @@ create table permissoes (
 insert into permissoes (nome) values ('VISUALIZAR'),('INSERIR'), ('ATUALIZAR'), ('DELETAR');
 
 create table usuario_sistemas_permissoes (
-    id_usuario int references usuarios(id),
-    id_sistema int references sistemas(id),
-    id_permissao int references permissoes(id),
-    PRIMARY KEY (id_usuario, id_sistema, id_permissao)
+    id_usuario int,
+    id_sistema int,
+    id_permissao int,
+    PRIMARY KEY (id_usuario, id_sistema, id_permissao),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+    FOREIGN KEY (id_sistema) REFERENCES sistemas(id),
+    FOREIGN KEY (id_permissao) REFERENCES permissoes(id)
 );
 
 

@@ -1,5 +1,6 @@
 package com.saneacre.gecons.domain.plano_operativo;
 
+import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoEntity;
 import com.saneacre.gecons.domain.enums.Grupos;
 import com.saneacre.gecons.domain.enums.TiposDemanda;
 import com.saneacre.gecons.domain.enums.Unidades;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Table(name = "demandas")
 @Entity(name = "Demanda")
@@ -41,6 +43,9 @@ public class DemandaEntity {
     private BigDecimal quantidade;
 
     private Boolean ativo;
+
+    @OneToMany(mappedBy = "demanda")
+    Set<ContratoFornecedorPoEntity> contrato_fornecedor_demanda;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

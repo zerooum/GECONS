@@ -1,5 +1,6 @@
 package com.saneacre.gecons.controller;
 
+import com.saneacre.gecons.domain.contrato_fornecedor_po.ItemNoContratoDTO;
 import com.saneacre.gecons.domain.contratos.*;
 import com.saneacre.gecons.utils.RespostaSimplesDTO;
 import jakarta.validation.Valid;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,24 @@ public class ContratoController {
     public ResponseEntity<RespostaSimplesDTO> deletarContrato(@PathVariable Long id) {
         service.deletaContrato(id);
         return ResponseEntity.ok().body(new RespostaSimplesDTO("Contrato com id " + id + " excluido!"));
+    }
+
+    @PreAuthorize("hasRole('CONTRATOS_INSERIR') or hasRole('ADMIN')")
+    @PostMapping("/item")
+    @Transactional
+    public ResponseEntity<ItemNoContratoDTO> adicionaItemNoContrato(@RequestBody @Valid ItemNoContratoDTO dados) {
+        var contratoFornecedorPo = service.adicionaItemNoContrato(dados);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dados);
+    }
+
+    @PreAuthorize("hasRole('CONTRATOS_DELETAR') or hasRole('ADMIN')")
+    @DeleteMapping("/item")
+    @Transactional
+    public ResponseEntity<RespostaSimplesDTO> removeItemNoContrato(@RequestBody @Valid ItemNoContratoDTO dados) {
+        service.removeItemNoContrato(dados);
+        return ResponseEntity.ok()
+                .body(new RespostaSimplesDTO("Item " + dados.demanda() + " removido do contrato " + dados.contrato()
+                        + " para o fornecedor " + dados.fornecedor()));
     }
 
 

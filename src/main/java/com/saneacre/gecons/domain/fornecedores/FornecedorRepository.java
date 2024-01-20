@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FornecedorRepository extends JpaRepository<FornecedorEntity, Long> {
     Page<FornecedorEntity> findAllByAtivoTrue(Pageable paginacao);
+
+    FornecedorEntity findByNome(String fornecedor);
 }

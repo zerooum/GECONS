@@ -20,19 +20,20 @@ public class UsuarioSistemaPermissaoEntity {
     @EmbeddedId
     private UsuarioSistemasPermissoesId id;
 
-    @ManyToOne
-    @MapsId("id_usuario")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("idUsuario")
     @JoinColumn(name = "id_usuario")
     private UsuarioEntity usuario;
 
-    @ManyToOne
-    @MapsId("id_sistema")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("idSistema")
     @JoinColumn(name = "id_sistema")
     private SistemaEntity sistema;
 
-    @ManyToOne
-    @MapsId("id_permissao")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("idPermissao")
     @JoinColumn(name = "id_permissao")
     private PermissaoEntity permissao;
+
 
 }

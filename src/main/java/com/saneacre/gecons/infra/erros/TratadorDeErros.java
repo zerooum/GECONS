@@ -33,6 +33,13 @@ public class TratadorDeErros {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
+    @ExceptionHandler(ConsumoMaiorQueRegistroException.class)
+    public ResponseEntity<ErroPadrao> trataErroConsumoRegistro(ConsumoMaiorQueRegistroException e, HttpServletRequest request) {
+        ErroPadrao err = this.montaErroPadrao(HttpStatus.BAD_REQUEST.value(),
+                "Quantidade de consumo não pode ser maior que a quantidade de registro", request);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErroPadrao> trataErroParse(HttpMessageNotReadableException e, HttpServletRequest request) {
         ErroPadrao err = this.montaErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMostSpecificCause().getMessage(), request);

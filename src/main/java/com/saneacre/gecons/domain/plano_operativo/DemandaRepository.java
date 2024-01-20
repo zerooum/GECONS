@@ -5,5 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DemandaRepository extends JpaRepository<DemandaEntity, Long> {
-    Page<DemandaEntity> findAllByAtivoTrue(Pageable paginacao);                    
+    Page<DemandaEntity> findAllByAtivoTrue(Pageable paginacao);
+
+    DemandaEntity findByNome(String fornecedor);
 }

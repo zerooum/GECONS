@@ -1,5 +1,6 @@
 package com.saneacre.gecons.domain.fornecedores;
 
+import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoEntity;
 import com.saneacre.gecons.domain.enums.PersonalidadeJuridica;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.Set;
 
 @Table(name = "fornecedores")
 @Entity(name = "Fornecedor")
@@ -36,6 +38,9 @@ public class FornecedorEntity {
     private String email;
 
     private Boolean ativo;
+
+    @OneToMany(mappedBy = "fornecedor")
+    Set<ContratoFornecedorPoEntity> contrato_fornecedor_demanda;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
