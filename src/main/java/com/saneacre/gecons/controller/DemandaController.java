@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/demandas")
 @PreAuthorize("hasRole('PLANO_OPERATIVO') or hasRole('ADMIN')")
@@ -61,4 +63,13 @@ public class DemandaController {
         service.excluirDemanda(id);
         return ResponseEntity.ok().body(new RespostaSimplesDTO("Contrato com id " + id + " excluido!"));
     }
+
+    @GetMapping("/{id}/contratos")
+    @PreAuthorize("hasRole('PLANO_OPERATIVO_VISUALIZAR') or hasRole('ADMIN')")
+    public ResponseEntity<List<DetalhaDemandaContratoDTO>> detalhaDemandaContratos(@PathVariable Long id) {
+        var demandaContratos = service.detalhaDemandaContratos(id);
+        return ResponseEntity.ok(demandaContratos);
+    }
+
+
 }

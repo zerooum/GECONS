@@ -1,6 +1,7 @@
 package com.saneacre.gecons.domain.contrato_fornecedor_po;
 
 import com.saneacre.gecons.domain.contratos.ContratoEntity;
+import com.saneacre.gecons.domain.plano_operativo.DemandaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,5 +14,7 @@ public interface ContratoFornecedorPoRepository extends JpaRepository<ContratoFo
     Optional<ContratoFornecedorPoEntity> procuraChaveDuplicada(ContratoFornecedorPoId id);
 
     List<ContratoFornecedorPoEntity> findByContrato(ContratoEntity contrato);
+    List<ContratoFornecedorPoEntity> findByDemanda(DemandaEntity demanda);
+
 
 }

@@ -89,6 +89,22 @@ public class ContratoService {
         if (jaExiste.isPresent()) throw new DataIntegrityViolationException("O item já esta adicionado ao contrato!");
 
         //verifica se o valor do item ultrapassa o valor total do contrato
+        verificaValorContrato(contratoFornecedorPo);
+
+        contratoFornecedorPoRepository.save(contratoFornecedorPo);
+        return contratoFornecedorPo;
+    }
+
+    public void removeItemNoContrato(ItemNoContratoDTO dados) {
+        var contratoFornecedorPo = getContratoFornecedorPo(dados);
+
+        var jaExiste = contratoFornecedorPoRepository.procuraChaveDuplicada(contratoFornecedorPo.getId());
+        if (jaExiste.isEmpty()) throw new EntityNotFoundException("O item não está presente no contrato!");
+
+        contratoFornecedorPoRepository.delete(contratoFornecedorPo);
+    }
+
+    private void verificaValorContrato(ContratoFornecedorPoEntity contratoFornecedorPo) {
         //calcula valor atual de todos os itens do contrato
         var contratos = contratoFornecedorPoRepository.findByContrato(contratoFornecedorPo.getContrato());
         BigDecimal valorTotalAtual = BigDecimal.ZERO;
@@ -106,19 +122,7 @@ public class ContratoService {
         //compara se a adição do novo item ultrapassa o valor do contrato
         var novoValorTotal = valorTotalAtual.add(valorItemAdicionado);
         if (novoValorTotal.compareTo(contratoFornecedorPo.getContrato().getValor()) > 0)
-            throw new DataIntegrityViolationException("Impossível adicionar item no contrato, " +
-                                                      "o item inserido ultrapassa o valor total");
-
-        contratoFornecedorPoRepository.save(contratoFornecedorPo);
-        return contratoFornecedorPo;
-    }
-
-    public void removeItemNoContrato(ItemNoContratoDTO dados) {
-        var contratoFornecedorPo = getContratoFornecedorPo(dados);
-
-        var jaExiste = contratoFornecedorPoRepository.procuraChaveDuplicada(contratoFornecedorPo.getId());
-        if (jaExiste.isEmpty()) throw new EntityNotFoundException("O item não está presente no contrato!");
-
-        contratoFornecedorPoRepository.delete(contratoFornecedorPo);
+            throw new DataIntegrityViolationException("Impossível adicionar/alterar item no contrato, " +
+                    "o item inserido ultrapassa o valor total");
     }
 }
