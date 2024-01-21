@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class ContratoService {
@@ -51,21 +52,17 @@ public class ContratoService {
 
     public ContratoEntity atualizarContrato(Long id, AtualizaContratoDTO dados) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isPresent()) {
-            if (!contrato.get().getAtivo()) throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
-            return contrato.get();
-        }
-        throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
+        if (contrato.isEmpty() || !contrato.get().getAtivo())
+            throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+        return contrato.get();
     }
 
     public void deletaContrato(Long id) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isPresent()) {
-            if (!contrato.get().getAtivo()) throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
-            contrato.get().excluir();
-            return;
-        }
-        throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
+        if (contrato.isEmpty() || !contrato.get().getAtivo())
+            throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+
+        contrato.get().excluir();
     }
 
 
@@ -134,4 +131,13 @@ public class ContratoService {
                     "o item inserido ultrapassa o valor total");
     }
 
+    public List<ItensContratoDTO> buscaItensDoContrato(Long id) {
+        var contrato = contratoRepository.findById(id);
+        if (contrato.isEmpty() || !contrato.get().getAtivo())
+            throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+
+        var contratoItens = contratoFornecedorPoRepository.findByContrato(contrato.get());
+        return contratoItens.stream().map(ItensContratoDTO::new).toList();
+
+    }
 }

@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/contratos")
 @PreAuthorize("hasRole('CONTRATOS') or hasRole('ADMIN')")
@@ -81,9 +83,11 @@ public class ContratoController {
                         + " para o fornecedor " + dados.fornecedor()));
     }
 
-
-
-
-
+    @GetMapping("/{id}/itens")
+    @PreAuthorize("hasRole('CONTRATOS_VISUALIZAR') or hasRole('ADMIN')")
+    public ResponseEntity<List<ItensContratoDTO>> buscaItensDoContrato(@PathVariable Long id) {
+        var itensDoContrato = service.buscaItensDoContrato(id);
+        return ResponseEntity.ok(itensDoContrato);
+    }
 
 }
