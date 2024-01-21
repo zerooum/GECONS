@@ -41,6 +41,14 @@ public class ContratoService {
         return contratoRepository.findAllByAtivoTrue(paginacao).map(RetornaContratoDTO::new);
     }
 
+    public RetornaContratoDTO buscaContratoPorId(Long id) {
+        var contrato = contratoRepository.findById(id);
+        if (contrato.isEmpty() || !contrato.get().getAtivo())
+            throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+
+        return new RetornaContratoDTO(contrato.get());
+    }
+
     public ContratoEntity atualizarContrato(Long id, AtualizaContratoDTO dados) {
         var contrato = contratoRepository.findById(id);
         if (contrato.isPresent()) {
@@ -125,4 +133,5 @@ public class ContratoService {
             throw new DataIntegrityViolationException("Impossível adicionar/alterar item no contrato, " +
                     "o item inserido ultrapassa o valor total");
     }
+
 }

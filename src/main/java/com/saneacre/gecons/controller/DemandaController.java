@@ -71,5 +71,4 @@ public class DemandaController {
         return ResponseEntity.ok(demandaContratos);
     }
 
-
 }

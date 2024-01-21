@@ -1,6 +1,7 @@
 package com.saneacre.gecons.domain.contrato_fornecedor_po;
 
 import com.saneacre.gecons.domain.contratos.ContratoEntity;
+import com.saneacre.gecons.domain.fornecedores.FornecedorEntity;
 import com.saneacre.gecons.domain.plano_operativo.DemandaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,6 @@ public interface ContratoFornecedorPoRepository extends JpaRepository<ContratoFo
 
     List<ContratoFornecedorPoEntity> findByContrato(ContratoEntity contrato);
     List<ContratoFornecedorPoEntity> findByDemanda(DemandaEntity demanda);
-
+    List<ContratoFornecedorPoEntity> findByFornecedor(FornecedorEntity fornecedor);
 
 }

@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/fornecedores")
 @PreAuthorize("hasRole('FORNECEDORES') or hasRole('ADMIN')")
@@ -60,5 +62,12 @@ public class FornecedorController {
     public ResponseEntity<RespostaSimplesDTO> excluirFornecedor(@PathVariable Long id) {
         service.deletaContrato(id);
         return ResponseEntity.ok().body(new RespostaSimplesDTO("Fornecedor com id " + id + " excluido!"));
+    }
+
+    @GetMapping("/{id}/contratos")
+    @PreAuthorize("hasRole('FORNECEDORES_VISUALIZAR') or hasRole('ADMIN')")
+    public ResponseEntity<List<DetalhaFornecedorContratoDTO>> detalhaFornecedorContrato(@PathVariable Long id) {
+        var fornecedorContratos = service.detalhaFornecedorContrato(id);
+        return ResponseEntity.ok(fornecedorContratos);
     }
 }

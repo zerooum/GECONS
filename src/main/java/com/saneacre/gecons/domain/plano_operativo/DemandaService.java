@@ -31,11 +31,10 @@ public class DemandaService {
 
     public DemandaEntity buscaDemandaPorId(Long id) {
         var demanda = demandaRepository.findById(id);
-        if (demanda.isPresent()) {
-            if (!demanda.get().getAtivo()) throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
-            return demanda.get();
-        }
-        throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+        if (demanda.isEmpty() || !demanda.get().getAtivo())
+            throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+
+        return demanda.get();
     }
 
     public DemandaEntity atualizarDemanda(AtualizaDemandaDTO dados, Long id) {

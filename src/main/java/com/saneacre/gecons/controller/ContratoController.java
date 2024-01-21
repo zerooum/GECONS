@@ -40,6 +40,13 @@ public class ContratoController {
         return ResponseEntity.ok(pageContratos);
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('CONTRATOS_VISUALIZAR') or hasRole('ADMIN')")
+    public ResponseEntity<RetornaContratoDTO> buscaContrato(@PathVariable Long id) {
+        var contrato = service.buscaContratoPorId(id);
+        return ResponseEntity.ok(contrato);
+    }
+
     @PutMapping("/{id}")
     @Transactional
     @PreAuthorize("hasRole('CONTRATOS_ATUALIZAR') or hasRole('ADMIN')")
