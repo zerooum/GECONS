@@ -36,7 +36,7 @@ public class ProgramaDeTrabalhoController {
 
     @GetMapping
     @PreAuthorize("hasRole('CONTRATOS_VISUALIZAR') or hasRole('ADMIN')")
-    public ResponseEntity<Page<RetornaProgramaDeTrabalhoDTO>> listaProgramasDeTrabalho(@PageableDefault(size = 10, sort = {"numero"})
+    public ResponseEntity<Page<RetornaProgramaDeTrabalhoDTO>> listaProgramasDeTrabalho(@PageableDefault(size = 10, sort = {"id"})
                                                                                            Pageable paginacao) {
         var pageProgramas = programaDeTrabalhoService.buscarTodosProgramas(paginacao);
         return ResponseEntity.ok(pageProgramas);
@@ -65,8 +65,5 @@ public class ProgramaDeTrabalhoController {
         programaDeTrabalhoService.deletaPrograma(id);
         return ResponseEntity.ok().body(new RespostaSimplesDTO("Programa de trabalho com id " + id + " excluido!"));
     }
-
-
-
 
 }
