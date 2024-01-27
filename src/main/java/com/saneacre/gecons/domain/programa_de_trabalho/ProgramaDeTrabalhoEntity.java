@@ -42,5 +42,19 @@ public class ProgramaDeTrabalhoEntity {
     public ProgramaDeTrabalhoEntity(CriaProgramaDeTrabalhoDTO dados) {
         this.numero = dados.numero();
         this.descricao = dados.descricao();
+        this.ativo = true;
+    }
+
+    public void atualizar(AtualizaProgramaDeTrabalhoDTO dados) {
+        if (dados.numero() != null)
+            this.numero = dados.numero();
+
+        if (dados.descricao() != null)
+            this.descricao = dados.descricao();
+
+    }
+
+    public void excluir() {
+        this.ativo = false;
     }
 }

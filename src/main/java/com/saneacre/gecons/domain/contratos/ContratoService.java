@@ -54,6 +54,7 @@ public class ContratoService {
         var contrato = contratoRepository.findById(id);
         if (contrato.isEmpty() || !contrato.get().getAtivo())
             throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+        contrato.get().atualizar(dados);
         return contrato.get();
     }
 
