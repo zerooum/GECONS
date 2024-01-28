@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.elemento_de_despesa;
+package com.saneacre.gecons.domain.contratos.elemento_de_despesa;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

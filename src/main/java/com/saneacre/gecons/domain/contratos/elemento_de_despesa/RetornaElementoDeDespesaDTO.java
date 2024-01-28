@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.elemento_de_despesa;
+package com.saneacre.gecons.domain.contratos.elemento_de_despesa;
 
 public record RetornaElementoDeDespesaDTO(Long id, String numero, String descricao) {
 

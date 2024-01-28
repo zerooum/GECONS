@@ -1,12 +1,9 @@
 package com.saneacre.gecons.controller;
 
-import com.saneacre.gecons.domain.fontes.AtualizaFonteDTO;
-import com.saneacre.gecons.domain.fontes.CriaFonteDTO;
-import com.saneacre.gecons.domain.fontes.FonteService;
-import com.saneacre.gecons.domain.fontes.RetornaFonteDTO;
-import com.saneacre.gecons.domain.programa_de_trabalho.AtualizaProgramaDeTrabalhoDTO;
-import com.saneacre.gecons.domain.programa_de_trabalho.CriaProgramaDeTrabalhoDTO;
-import com.saneacre.gecons.domain.programa_de_trabalho.RetornaProgramaDeTrabalhoDTO;
+import com.saneacre.gecons.domain.contratos.fontes.AtualizaFonteDTO;
+import com.saneacre.gecons.domain.contratos.fontes.CriaFonteDTO;
+import com.saneacre.gecons.domain.contratos.fontes.FonteService;
+import com.saneacre.gecons.domain.contratos.fontes.RetornaFonteDTO;
 import com.saneacre.gecons.utils.RespostaSimplesDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

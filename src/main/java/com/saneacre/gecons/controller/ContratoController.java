@@ -2,6 +2,8 @@ package com.saneacre.gecons.controller;
 
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ItemNoContratoDTO;
 import com.saneacre.gecons.domain.contratos.*;
+import com.saneacre.gecons.domain.contratos.contrato_programa.ProgramaNoContratoDTO;
+import com.saneacre.gecons.domain.contratos.contrato_programa.ProgramasContratoDTO;
 import com.saneacre.gecons.utils.RespostaSimplesDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +67,13 @@ public class ContratoController {
         return ResponseEntity.ok().body(new RespostaSimplesDTO("Contrato com id " + id + " excluido!"));
     }
 
+    // Rotas de itens do contrato
+
     @PreAuthorize("hasRole('CONTRATOS_INSERIR') or hasRole('ADMIN')")
     @PostMapping("/item")
     @Transactional
     public ResponseEntity<ItemNoContratoDTO> adicionaItemNoContrato(@RequestBody @Valid ItemNoContratoDTO dados) {
-        var contratoFornecedorPo = service.adicionaItemNoContrato(dados);
+        service.adicionaItemNoContrato(dados);
         return ResponseEntity.status(HttpStatus.CREATED).body(dados);
     }
 
@@ -88,6 +92,33 @@ public class ContratoController {
     public ResponseEntity<List<ItensContratoDTO>> buscaItensDoContrato(@PathVariable Long id) {
         var itensDoContrato = service.buscaItensDoContrato(id);
         return ResponseEntity.ok(itensDoContrato);
+    }
+
+    //Rotas de programas de trabalho do contrato
+
+    @PostMapping("/programa-de-trabalho")
+    @Transactional
+    @PreAuthorize("hasRole('CONTRATOS_INSERIR') or hasRole('ADMIN')")
+    public ResponseEntity<ProgramaNoContratoDTO> adicionaProgramaNoContrato(@RequestBody @Valid ProgramaNoContratoDTO dados) {
+        service.adicionaProgramaNoContrato(dados);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dados);
+    }
+
+    @PreAuthorize("hasRole('CONTRATOS_DELETAR') or hasRole('ADMIN')")
+    @DeleteMapping("/programa-de-trabalho")
+    @Transactional
+    public ResponseEntity<RespostaSimplesDTO> removeProgramaNoContrato(@RequestBody @Valid ProgramaNoContratoDTO dados) {
+        service.removeProgramaNoContrato(dados);
+        return ResponseEntity.ok()
+                .body(new RespostaSimplesDTO("Programa de trabalho " + dados.programa()
+                        + " removido do contrato " + dados.contrato()));
+    }
+
+    @GetMapping("/{id}/programas")
+    @PreAuthorize("hasRole('CONTRATOS_VISUALIZAR') or hasRole('ADMIN')")
+    public ResponseEntity<List<ProgramasContratoDTO>> buscaProgramasDoContrato(@PathVariable Long id) {
+        var programasDoContrato = service.buscaProgramasDoContrato(id);
+        return ResponseEntity.ok(programasDoContrato);
     }
 
 }

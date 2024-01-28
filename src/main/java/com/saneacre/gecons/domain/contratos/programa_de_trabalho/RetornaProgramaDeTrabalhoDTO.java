@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.programa_de_trabalho;
+package com.saneacre.gecons.domain.contratos.programa_de_trabalho;
 
 public record RetornaProgramaDeTrabalhoDTO(Long id, String numero, String descricao) {
 

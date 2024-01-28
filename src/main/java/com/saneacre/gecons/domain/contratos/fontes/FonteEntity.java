@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.elemento_de_despesa;
+package com.saneacre.gecons.domain.contratos.fontes;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,13 +10,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
-@Table(name = "elementos_de_despesa")
-@Entity(name = "ElementoDeDespesa")
+@Table(name = "fontes")
+@Entity(name = "Fonte")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class ElementoDeDespesaEntity {
+public class FonteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,13 +38,13 @@ public class ElementoDeDespesaEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date ts_modificacao;
 
-    public ElementoDeDespesaEntity(CriaElementoDeDespesaDTO dados) {
+    public FonteEntity(CriaFonteDTO dados) {
         this.numero = dados.numero();
         this.descricao = dados.descricao();
         this.ativo = true;
     }
 
-    public void atualizar(AtualizaElementoDeDespesaDTO dados) {
+    public void atualizar(AtualizaFonteDTO dados) {
         if (dados.numero() != null)
             this.numero = dados.numero();
 
@@ -56,5 +56,4 @@ public class ElementoDeDespesaEntity {
     public void excluir() {
         this.ativo = false;
     }
-
 }

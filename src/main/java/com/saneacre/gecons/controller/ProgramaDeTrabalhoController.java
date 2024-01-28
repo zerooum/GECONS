@@ -1,9 +1,9 @@
 package com.saneacre.gecons.controller;
 
-import com.saneacre.gecons.domain.programa_de_trabalho.AtualizaProgramaDeTrabalhoDTO;
-import com.saneacre.gecons.domain.programa_de_trabalho.CriaProgramaDeTrabalhoDTO;
-import com.saneacre.gecons.domain.programa_de_trabalho.ProgramaDeTrabalhoService;
-import com.saneacre.gecons.domain.programa_de_trabalho.RetornaProgramaDeTrabalhoDTO;
+import com.saneacre.gecons.domain.contratos.programa_de_trabalho.AtualizaProgramaDeTrabalhoDTO;
+import com.saneacre.gecons.domain.contratos.programa_de_trabalho.CriaProgramaDeTrabalhoDTO;
+import com.saneacre.gecons.domain.contratos.programa_de_trabalho.ProgramaDeTrabalhoService;
+import com.saneacre.gecons.domain.contratos.programa_de_trabalho.RetornaProgramaDeTrabalhoDTO;
 import com.saneacre.gecons.utils.RespostaSimplesDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

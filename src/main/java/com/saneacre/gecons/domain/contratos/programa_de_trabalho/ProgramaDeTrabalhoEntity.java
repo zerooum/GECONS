@@ -1,6 +1,5 @@
-package com.saneacre.gecons.domain.programa_de_trabalho;
+package com.saneacre.gecons.domain.contratos.programa_de_trabalho;
 
-import com.saneacre.gecons.domain.contratos.CriaContratoDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

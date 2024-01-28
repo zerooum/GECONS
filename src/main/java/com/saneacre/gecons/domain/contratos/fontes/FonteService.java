@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.fontes;
+package com.saneacre.gecons.domain.contratos.fontes;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

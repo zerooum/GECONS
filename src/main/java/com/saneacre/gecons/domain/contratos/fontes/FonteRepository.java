@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.fontes;
+package com.saneacre.gecons.domain.contratos.fontes;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package com.saneacre.gecons.domain.fontes;
+package com.saneacre.gecons.domain.contratos.fontes;
 
 import jakarta.validation.constraints.Pattern;
 
