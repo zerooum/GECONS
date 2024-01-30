@@ -1,5 +1,6 @@
 package com.saneacre.gecons.domain.contratos.programa_de_trabalho;
 
+import com.saneacre.gecons.domain.contratos.contrato_programa.ContratoProgramaEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.Set;
 
 @Table(name = "programas_de_trabalho")
 @Entity(name = "ProgramaDeTrabalho")
@@ -28,6 +30,9 @@ public class ProgramaDeTrabalhoEntity {
     private String descricao;
 
     private Boolean ativo;
+
+    @OneToMany(mappedBy = "programa")
+    Set<ContratoProgramaEntity> programa_contrato;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

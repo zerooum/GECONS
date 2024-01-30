@@ -1,5 +1,6 @@
 package com.saneacre.gecons.domain.contratos.elemento_de_despesa;
 
+import com.saneacre.gecons.domain.contratos.contrato_elemento.ContratoElementoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.Set;
 
 @Table(name = "elementos_de_despesa")
 @Entity(name = "ElementoDeDespesa")
@@ -28,6 +30,9 @@ public class ElementoDeDespesaEntity {
     private String descricao;
 
     private Boolean ativo;
+
+    @OneToMany(mappedBy = "elemento")
+    Set<ContratoElementoEntity> elemento_contrato;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

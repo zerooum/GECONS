@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ElementoDeDespesaRepository extends JpaRepository<ElementoDeDespesaEntity, Long> {
     Page<ElementoDeDespesaEntity> findAllByAtivoTrue(Pageable paginacao);
+    ElementoDeDespesaEntity findByNumero(String numero);
+
 }

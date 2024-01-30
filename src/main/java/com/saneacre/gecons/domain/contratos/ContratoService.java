@@ -4,7 +4,9 @@ import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoEnt
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoId;
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoRepository;
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ItemNoContratoDTO;
+import com.saneacre.gecons.domain.contratos.contrato_elemento.*;
 import com.saneacre.gecons.domain.contratos.contrato_programa.*;
+import com.saneacre.gecons.domain.contratos.elemento_de_despesa.ElementoDeDespesaRepository;
 import com.saneacre.gecons.domain.contratos.programa_de_trabalho.ProgramaDeTrabalhoRepository;
 import com.saneacre.gecons.domain.fornecedores.FornecedorRepository;
 import com.saneacre.gecons.domain.plano_operativo.DemandaRepository;
@@ -39,6 +41,12 @@ public class ContratoService {
 
     @Autowired
     ContratoProgramaRepository contratoProgramaRepository;
+
+    @Autowired
+    ElementoDeDespesaRepository elementoDeDespesaRepository;
+
+    @Autowired
+    ContratoElementoRepository contratoElementoRepository;
 
     public ContratoEntity cadastrarContrato(CriaContratoDTO dados) {
         var contrato = new ContratoEntity(dados);
@@ -188,7 +196,6 @@ public class ContratoService {
         contratoProgramaRepository.delete(contratoPrograma);
     }
 
-
     public List<ProgramasContratoDTO> buscaProgramasDoContrato(Long id) {
         var contrato = contratoRepository.findById(id);
         if (contrato.isEmpty() || !contrato.get().getAtivo())
@@ -197,4 +204,51 @@ public class ContratoService {
         var contratoProgramas = contratoProgramaRepository.findByContrato(contrato.get());
         return contratoProgramas.stream().map(ProgramasContratoDTO::new).toList();
     }
+
+    //Elementos no contrato
+    public ContratoElementoEntity getContratoElemento(ElementoNoContratoDTO dados) {
+        var contrato = contratoRepository.findByNumero(dados.contrato());
+        if (contrato == null || !contrato.getAtivo())
+            throw new EntityNotFoundException("O contrato informado não está cadastrado!");
+
+        var elemento = elementoDeDespesaRepository.findByNumero(dados.elemento());
+        if (elemento == null || !elemento.getAtivo())
+            throw new EntityNotFoundException("O elemento de despesa informado não está cadastrado!");
+
+        ContratoElementoId id = new ContratoElementoId(contrato.getId(), elemento.getId());
+        return new ContratoElementoEntity(id, contrato, elemento);
+    }
+
+    public void adicionaElementoNoContrato(ElementoNoContratoDTO dados) {
+        var contratoElemento = getContratoElemento(dados);
+
+        var jaExiste = contratoElementoRepository.procuraChaveDuplicada(contratoElemento.getId());
+        if (jaExiste.isPresent())
+            throw new DataIntegrityViolationException("O elemento de despesa já esta adicionado ao contrato!");
+
+        contratoElementoRepository.save(contratoElemento);
+    }
+
+    public void removeElementoNoContrato(ElementoNoContratoDTO dados) {
+        var contratoElemento = getContratoElemento(dados);
+
+        var jaExiste = contratoElementoRepository.procuraChaveDuplicada(contratoElemento.getId());
+        if (jaExiste.isEmpty())
+            throw new EntityNotFoundException("O elemento de despesa não está presente no contrato!");
+
+        // ADICIONAR LOGICA PARA VERIFICAR SE JA EXISTE EMPENHO NO PROGRAMA ANTES DE REMOVER
+
+        contratoElementoRepository.delete(contratoElemento);
+    }
+
+    public List<ElementosContratoDTO> buscaElementosDoContrato(Long id) {
+        var contrato = contratoRepository.findById(id);
+        if (contrato.isEmpty() || !contrato.get().getAtivo())
+            throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
+
+        var contratoElementos = contratoElementoRepository.findByContrato(contrato.get());
+        return contratoElementos.stream().map(ElementosContratoDTO::new).toList();
+    }
+
+
 }

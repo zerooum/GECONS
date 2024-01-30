@@ -2,6 +2,8 @@ package com.saneacre.gecons.controller;
 
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ItemNoContratoDTO;
 import com.saneacre.gecons.domain.contratos.*;
+import com.saneacre.gecons.domain.contratos.contrato_elemento.ElementoNoContratoDTO;
+import com.saneacre.gecons.domain.contratos.contrato_elemento.ElementosContratoDTO;
 import com.saneacre.gecons.domain.contratos.contrato_programa.ProgramaNoContratoDTO;
 import com.saneacre.gecons.domain.contratos.contrato_programa.ProgramasContratoDTO;
 import com.saneacre.gecons.utils.RespostaSimplesDTO;
@@ -95,7 +97,6 @@ public class ContratoController {
     }
 
     //Rotas de programas de trabalho do contrato
-
     @PostMapping("/programa-de-trabalho")
     @Transactional
     @PreAuthorize("hasRole('CONTRATOS_INSERIR') or hasRole('ADMIN')")
@@ -119,6 +120,32 @@ public class ContratoController {
     public ResponseEntity<List<ProgramasContratoDTO>> buscaProgramasDoContrato(@PathVariable Long id) {
         var programasDoContrato = service.buscaProgramasDoContrato(id);
         return ResponseEntity.ok(programasDoContrato);
+    }
+
+    //Rotas de elementos de despesa do contrato
+    @PostMapping("/elementos-de-despesa")
+    @Transactional
+    @PreAuthorize("hasRole('CONTRATOS_INSERIR') or hasRole('ADMIN')")
+    public ResponseEntity<ElementoNoContratoDTO> adicionaElementoNoContrato(@RequestBody @Valid ElementoNoContratoDTO dados) {
+        service.adicionaElementoNoContrato(dados);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dados);
+    }
+
+    @PreAuthorize("hasRole('CONTRATOS_DELETAR') or hasRole('ADMIN')")
+    @DeleteMapping("/elementos-de-despesa")
+    @Transactional
+    public ResponseEntity<RespostaSimplesDTO> removeElementoNoContrato(@RequestBody @Valid ElementoNoContratoDTO dados) {
+        service.removeElementoNoContrato(dados);
+        return ResponseEntity.ok()
+                .body(new RespostaSimplesDTO("Elemento de despesa " + dados.elemento()
+                        + " removido do contrato " + dados.contrato()));
+    }
+
+    @GetMapping("/{id}/elementos")
+    @PreAuthorize("hasRole('CONTRATOS_VISUALIZAR') or hasRole('ADMIN')")
+    public ResponseEntity<List<ElementosContratoDTO>> buscaElementosDoContrato(@PathVariable Long id) {
+        var elementosDoContrato = service.buscaElementosDoContrato(id);
+        return ResponseEntity.ok(elementosDoContrato);
     }
 
 }
