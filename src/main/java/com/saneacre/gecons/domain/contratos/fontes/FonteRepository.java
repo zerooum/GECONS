@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FonteRepository extends JpaRepository<FonteEntity, Long> {
     Page<FonteEntity> findAllByAtivoTrue(Pageable paginacao);
+    FonteEntity findByNumero(String numero);
 }

@@ -1,5 +1,6 @@
 package com.saneacre.gecons.domain.contratos.fontes;
 
+import com.saneacre.gecons.domain.contratos.contrato_fonte.ContratoFonteEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.Set;
 
 @Table(name = "fontes")
 @Entity(name = "Fonte")
@@ -28,6 +30,9 @@ public class FonteEntity {
     private String descricao;
 
     private Boolean ativo;
+
+    @OneToMany(mappedBy = "fonte")
+    Set<ContratoFonteEntity> fonte_contrato;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

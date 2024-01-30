@@ -4,6 +4,8 @@ import com.saneacre.gecons.domain.contrato_fornecedor_po.ItemNoContratoDTO;
 import com.saneacre.gecons.domain.contratos.*;
 import com.saneacre.gecons.domain.contratos.contrato_elemento.ElementoNoContratoDTO;
 import com.saneacre.gecons.domain.contratos.contrato_elemento.ElementosContratoDTO;
+import com.saneacre.gecons.domain.contratos.contrato_fonte.FonteNoContratoDTO;
+import com.saneacre.gecons.domain.contratos.contrato_fonte.FontesContratoDTO;
 import com.saneacre.gecons.domain.contratos.contrato_programa.ProgramaNoContratoDTO;
 import com.saneacre.gecons.domain.contratos.contrato_programa.ProgramasContratoDTO;
 import com.saneacre.gecons.utils.RespostaSimplesDTO;
@@ -146,6 +148,32 @@ public class ContratoController {
     public ResponseEntity<List<ElementosContratoDTO>> buscaElementosDoContrato(@PathVariable Long id) {
         var elementosDoContrato = service.buscaElementosDoContrato(id);
         return ResponseEntity.ok(elementosDoContrato);
+    }
+
+    //Rotas de fontes do contrato
+    @PostMapping("/fontes")
+    @Transactional
+    @PreAuthorize("hasRole('CONTRATOS_INSERIR') or hasRole('ADMIN')")
+    public ResponseEntity<FonteNoContratoDTO> adicionaFonteNoContrato(@RequestBody @Valid FonteNoContratoDTO dados) {
+        service.adicionaFonteNoContrato(dados);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dados);
+    }
+
+    @PreAuthorize("hasRole('CONTRATOS_DELETAR') or hasRole('ADMIN')")
+    @DeleteMapping("/fontes")
+    @Transactional
+    public ResponseEntity<RespostaSimplesDTO> removeFonteNoContrato(@RequestBody @Valid FonteNoContratoDTO dados) {
+        service.removeFonteNoContrato(dados);
+        return ResponseEntity.ok()
+                .body(new RespostaSimplesDTO("Fonte " + dados.fonte()
+                        + " removida do contrato " + dados.contrato()));
+    }
+
+    @GetMapping("/{id}/fontes")
+    @PreAuthorize("hasRole('CONTRATOS_VISUALIZAR') or hasRole('ADMIN')")
+    public ResponseEntity<List<FontesContratoDTO>> buscaFontesDoContrato(@PathVariable Long id) {
+        var fontesDoContrato = service.buscaFontesDoContrato(id);
+        return ResponseEntity.ok(fontesDoContrato);
     }
 
 }

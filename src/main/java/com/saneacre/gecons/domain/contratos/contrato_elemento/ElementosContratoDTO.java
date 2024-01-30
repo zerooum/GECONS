@@ -4,6 +4,5 @@ public record ElementosContratoDTO(String numeroElemento, String descricaoElemen
 
     public ElementosContratoDTO(ContratoElementoEntity dados) {
         this(dados.getElemento().getNumero(), dados.getElemento().getDescricao());
-
     }
 }
