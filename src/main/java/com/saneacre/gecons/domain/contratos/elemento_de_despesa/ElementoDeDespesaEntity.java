@@ -1,6 +1,7 @@
 package com.saneacre.gecons.domain.contratos.elemento_de_despesa;
 
 import com.saneacre.gecons.domain.contratos.contrato_elemento.ContratoElementoEntity;
+import com.saneacre.gecons.domain.empenhos.EmpenhoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -33,6 +34,9 @@ public class ElementoDeDespesaEntity {
 
     @OneToMany(mappedBy = "elemento")
     Set<ContratoElementoEntity> elemento_contrato;
+
+    @OneToMany(mappedBy = "elemento")
+    Set<EmpenhoEntity> empenhos;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

@@ -142,7 +142,6 @@ public class ContratoService {
         BigDecimal valorTotalAtual = BigDecimal.ZERO;
         for (var contrato : contratos) {
             BigDecimal valorItem = contrato.getQuantRegistro().multiply(contrato.getValorUnitario());
-            System.out.println(valorItem);
             valorTotalAtual = valorTotalAtual.add(valorItem);
         }
 

@@ -1,6 +1,7 @@
 package com.saneacre.gecons.domain.contratos.programa_de_trabalho;
 
 import com.saneacre.gecons.domain.contratos.contrato_programa.ContratoProgramaEntity;
+import com.saneacre.gecons.domain.empenhos.EmpenhoEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -33,6 +34,9 @@ public class ProgramaDeTrabalhoEntity {
 
     @OneToMany(mappedBy = "programa")
     Set<ContratoProgramaEntity> programa_contrato;
+
+    @OneToMany(mappedBy = "programa")
+    Set<EmpenhoEntity> empenhos;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

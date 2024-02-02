@@ -4,6 +4,7 @@ import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoEnt
 import com.saneacre.gecons.domain.contratos.contrato_elemento.ContratoElementoEntity;
 import com.saneacre.gecons.domain.contratos.contrato_fonte.ContratoFonteEntity;
 import com.saneacre.gecons.domain.contratos.contrato_programa.ContratoProgramaEntity;
+import com.saneacre.gecons.domain.empenhos.EmpenhoEntity;
 import com.saneacre.gecons.domain.enums.TiposContrato;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -62,6 +63,9 @@ public class ContratoEntity {
 
     @OneToMany(mappedBy = "contrato")
     Set<ContratoFonteEntity> contrato_fonte;
+
+    @OneToMany(mappedBy = "contrato")
+    Set<EmpenhoEntity> empenhos;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
