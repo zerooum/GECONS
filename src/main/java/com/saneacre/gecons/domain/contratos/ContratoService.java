@@ -139,11 +139,9 @@ public class ContratoService {
     private void verificaValorContrato(ContratoFornecedorPoEntity contratoFornecedorPo) {
         //calcula valor atual de todos os itens do contrato
         var contratos = contratoFornecedorPoRepository.findByContrato(contratoFornecedorPo.getContrato());
-        BigDecimal valorTotalAtual = BigDecimal.ZERO;
-        for (var contrato : contratos) {
-            BigDecimal valorItem = contrato.getQuantRegistro().multiply(contrato.getValorUnitario());
-            valorTotalAtual = valorTotalAtual.add(valorItem);
-        }
+        BigDecimal valorTotalAtual = contratos.stream()
+                .map(contrato -> contrato.getQuantRegistro().multiply(contrato.getValorUnitario()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         //calcula valor do item a ser adicionado
         var quantItemAdicionado = contratoFornecedorPo.getQuantRegistro();

@@ -52,4 +52,14 @@ public class EmpenhoEntity {
 
     private String descricao;
 
+    public void atualizar(AtualizaEmpenhoDTO dados) {
+        if (dados.numero() != null)
+            this.numero = dados.numero();
+        if (dados.valor() != null)
+            this.valor = dados.valor();
+        if (dados.data() != null)
+            this.data = dados.data();
+        if (dados.descricao() != null)
+            this.descricao = dados.descricao();
+    }
 }

@@ -2,7 +2,6 @@ package com.saneacre.gecons.domain.empenhos;
 
 import com.saneacre.gecons.domain.contratos.ContratoEntity;
 import com.saneacre.gecons.domain.contratos.ContratoRepository;
-import com.saneacre.gecons.domain.contratos.RetornaContratoDTO;
 import com.saneacre.gecons.domain.contratos.elemento_de_despesa.ElementoDeDespesaEntity;
 import com.saneacre.gecons.domain.contratos.elemento_de_despesa.ElementoDeDespesaRepository;
 import com.saneacre.gecons.domain.contratos.fontes.FonteEntity;
@@ -11,6 +10,7 @@ import com.saneacre.gecons.domain.contratos.programa_de_trabalho.ProgramaDeTraba
 import com.saneacre.gecons.domain.contratos.programa_de_trabalho.ProgramaDeTrabalhoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,15 +41,42 @@ public class EmpenhoService {
         var elemento = validaElemento(dados.idElemento());
         var fonte = validaFonte(dados.idFonte());
 
+        if (verificaValorTotal(contrato)) {
+            throw new DataIntegrityViolationException("Impossível adicionar/alterar empenho, " +
+                    "o valor inserido ultrapassa o valor total do contrato");
+        }
 
-
-        var empenho = new EmpenhoEntity(0, contrato, programa, elemento, fonte, dados.numero(), dados.valor(), dados.data(), dados.descricao());
+        var empenho = new EmpenhoEntity(0, contrato, programa, elemento, fonte, dados.numero(), dados.valor(),
+                                        dados.data(), dados.descricao());
         empenhoRepository.save(empenho);
         return empenho;
     }
 
     public Page<RetornaEmpenhoDTO> buscaTodosEmpenhos(Pageable paginacao) {
         return empenhoRepository.findAll(paginacao).map(RetornaEmpenhoDTO::new);
+    }
+
+    public RetornaEmpenhoDTO buscaEmpenhoPorId(Long id) {
+        var empenho = empenhoRepository.findById(id);
+        if (empenho.isEmpty())
+            throw new EntityNotFoundException("Empenho com o id " + id + " não encontrado!");
+
+        return new RetornaEmpenhoDTO(empenho.get());
+    }
+
+    public EmpenhoEntity atualizarEmpenho(Long id, AtualizaEmpenhoDTO dados) {
+        var empenho = empenhoRepository.findById(id);
+        if (empenho.isEmpty())
+            throw new EntityNotFoundException("Empenho com o id " + id + " não encontrado!");
+        empenho.get().atualizar(dados);
+        return empenho.get();
+    }
+
+    public void deletaEmpenho(Long id) {
+        var empenho = empenhoRepository.findById(id);
+        if (empenho.isEmpty())
+            throw new EntityNotFoundException("Empenho com o id " + id + " não encontrado!");
+        empenhoRepository.delete(empenho.get());
     }
 
     private ContratoEntity validaContrato(Long idContrato) {
@@ -80,10 +107,11 @@ public class EmpenhoService {
         return fonte.get();
     }
 
-    private BigDecimal pegaSomaValorEmpenhos(ContratoEntity contrato) {
+    private boolean verificaValorTotal(ContratoEntity contrato) {
         var empenhos = empenhoRepository.findByContrato(contrato);
-        return empenhos.stream().map(EmpenhoEntity::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal valorAtual = empenhos.stream().map(EmpenhoEntity::getValor).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal novoValor = contrato.getValor().add(valorAtual);
+        return (novoValor.compareTo(contrato.getValor()) > 0);
     }
-
 
 }
