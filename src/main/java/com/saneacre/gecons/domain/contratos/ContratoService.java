@@ -10,6 +10,7 @@ import com.saneacre.gecons.domain.contratos.contrato_programa.*;
 import com.saneacre.gecons.domain.contratos.elemento_de_despesa.ElementoDeDespesaRepository;
 import com.saneacre.gecons.domain.contratos.fontes.FonteRepository;
 import com.saneacre.gecons.domain.contratos.programa_de_trabalho.ProgramaDeTrabalhoRepository;
+import com.saneacre.gecons.domain.empenhos.EmpenhoRepository;
 import com.saneacre.gecons.domain.fornecedores.FornecedorRepository;
 import com.saneacre.gecons.domain.plano_operativo.DemandaRepository;
 import com.saneacre.gecons.infra.erros.ConsumoMaiorQueRegistroException;
@@ -55,6 +56,9 @@ public class ContratoService {
 
     @Autowired
     ContratoFonteRepository contratoFonteRepository;
+
+    @Autowired
+    EmpenhoRepository empenhoRepository;
 
     public ContratoEntity cadastrarContrato(CriaContratoDTO dados) {
         var contrato = new ContratoEntity(dados);
@@ -196,7 +200,12 @@ public class ContratoService {
         if (jaExiste.isEmpty())
             throw new EntityNotFoundException("O programa de trabalho não está presente no contrato!");
 
-        // ADICIONAR LOGICA PARA VERIFICAR SE JA EXISTE EMPENHO NO PROGRAMA ANTES DE REMOVER
+        // Verifica se ja existe empenho para o programa no contrato
+        var empenhos = empenhoRepository.findByContratoAndPrograma(contratoPrograma.getContrato(),
+                                                                    contratoPrograma.getPrograma());
+        if (!empenhos.isEmpty())
+            throw new DataIntegrityViolationException("Não é possível remover o programa do contrato, " +
+                                                      "pois já existem empenhos associados!");
 
         contratoProgramaRepository.delete(contratoPrograma);
     }
@@ -241,7 +250,12 @@ public class ContratoService {
         if (jaExiste.isEmpty())
             throw new EntityNotFoundException("O elemento de despesa não está presente no contrato!");
 
-        // ADICIONAR LOGICA PARA VERIFICAR SE JA EXISTE EMPENHO NO PROGRAMA ANTES DE REMOVER
+        // Verifica se ja existe empenho para o programa no contrato
+        var empenhos = empenhoRepository.findByContratoAndElemento(contratoElemento.getContrato(),
+                contratoElemento.getElemento());
+        if (!empenhos.isEmpty())
+            throw new DataIntegrityViolationException("Não é possível remover o elemento do contrato, " +
+                    "pois já existem empenhos associados!");
 
         contratoElementoRepository.delete(contratoElemento);
     }
@@ -286,7 +300,12 @@ public class ContratoService {
         if (jaExiste.isEmpty())
             throw new EntityNotFoundException("A fonte não está presente no contrato!");
 
-        // ADICIONAR LOGICA PARA VERIFICAR SE JA EXISTE EMPENHO NO PROGRAMA ANTES DE REMOVER
+        // Verifica se ja existe empenho para o programa no contrato
+        var empenhos = empenhoRepository.findByContratoAndFonte(contratoFonte.getContrato(),
+                contratoFonte.getFonte());
+        if (!empenhos.isEmpty())
+            throw new DataIntegrityViolationException("Não é possível remover a fonte do contrato, " +
+                    "pois já existem empenhos associados!");
 
         contratoFonteRepository.delete(contratoFonte);
     }
@@ -299,6 +318,18 @@ public class ContratoService {
         var contratoFontes = contratoFonteRepository.findByContrato(contrato.get());
         return contratoFontes.stream().map(FontesContratoDTO::new).toList();
     }
+
+    //Empenhos no contrato
+    public List<EmpenhosContratoDTO> buscaEmpenhosDoContrato(Long id) {
+        var contrato = contratoRepository.findById(id);
+        if (contrato.isEmpty() || !contrato.get().getAtivo())
+            throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
+
+        var contratoEmpenhos = empenhoRepository.findByContrato(contrato.get());
+        return contratoEmpenhos.stream().map(EmpenhosContratoDTO::new).toList();
+    }
+
+
 
 
 }

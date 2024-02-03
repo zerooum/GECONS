@@ -176,4 +176,12 @@ public class ContratoController {
         return ResponseEntity.ok(fontesDoContrato);
     }
 
+    //Rotas de empenhos do contrato
+    @GetMapping("/{id}/empenhos")
+    @PreAuthorize("hasRole('CONTRATOS_VISUALIZAR') or hasRole('ADMIN')")
+    public ResponseEntity<List<EmpenhosContratoDTO>> buscaEmpenhosDoContrato(@PathVariable Long id) {
+        var empenhosDoContrato = service.buscaEmpenhosDoContrato(id);
+        return ResponseEntity.ok(empenhosDoContrato);
+    }
+
 }

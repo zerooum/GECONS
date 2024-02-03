@@ -14,5 +14,4 @@ public interface ContratoProgramaRepository extends JpaRepository<ContratoProgra
     Optional<ContratoProgramaEntity> procuraChaveDuplicada(ContratoProgramaId id);
 
     List<ContratoProgramaEntity> findByContrato(ContratoEntity contrato);
-    List<ContratoProgramaEntity> findByPrograma(ProgramaDeTrabalhoEntity programa);
 }
