@@ -1,7 +1,8 @@
-package com.saneacre.gecons.domain.contrato_fornecedor_po;
+package com.saneacre.gecons.domain.compras.itens;
 
-import com.saneacre.gecons.domain.compras.itens.CompraItemEntity;
+import com.saneacre.gecons.domain.compras.CompraEntity;
 import com.saneacre.gecons.domain.contratos.ContratoEntity;
+import com.saneacre.gecons.domain.empenhos.EmpenhoEntity;
 import com.saneacre.gecons.domain.fornecedores.FornecedorEntity;
 import com.saneacre.gecons.domain.plano_operativo.DemandaEntity;
 import jakarta.persistence.*;
@@ -11,18 +12,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
-@Table(name = "contrato_fornecedor_demanda")
-@Entity(name = "ContratoFornecedorPo")
+@Table(name = "compra_item")
+@Entity(name = "CompraItem")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class ContratoFornecedorPoEntity {
+public class CompraItemEntity {
 
     @EmbeddedId
-    private ContratoFornecedorPoId id;
+    private CompraItemId id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("idCompra")
+    @JoinColumn(name = "id_compra")
+    private CompraEntity compra;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idContrato")
@@ -39,13 +44,6 @@ public class ContratoFornecedorPoEntity {
     @JoinColumn(name = "id_demanda")
     private DemandaEntity demanda;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal quantConsumo;
-
-    @Column(precision = 10, scale = 2)
-    private BigDecimal quantRegistro;
-
-    @Column(precision = 12, scale = 2)
-    private BigDecimal valorUnitario;
+    private BigDecimal quantidade;
 
 }

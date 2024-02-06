@@ -1,5 +1,6 @@
 package com.saneacre.gecons.domain.contratos;
 
+import com.saneacre.gecons.domain.compras.itens.CompraItemEntity;
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoEntity;
 import com.saneacre.gecons.domain.contratos.contrato_elemento.ContratoElementoEntity;
 import com.saneacre.gecons.domain.contratos.contrato_fonte.ContratoFonteEntity;
@@ -26,6 +27,7 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class ContratoEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -66,6 +68,7 @@ public class ContratoEntity {
 
     @OneToMany(mappedBy = "contrato")
     Set<EmpenhoEntity> empenhos;
+
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

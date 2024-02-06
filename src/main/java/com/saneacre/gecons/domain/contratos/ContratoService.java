@@ -329,7 +329,4 @@ public class ContratoService {
         return contratoEmpenhos.stream().map(EmpenhosContratoDTO::new).toList();
     }
 
-
-
-
 }

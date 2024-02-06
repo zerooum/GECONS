@@ -62,7 +62,7 @@ public class EmpenhoService {
         }
 
         var empenho = new EmpenhoEntity(0, contrato, programa, elemento, fonte, dados.numero(), dados.valor(),
-                                        dados.data(), dados.descricao());
+                                        dados.data(), dados.descricao(), null);
         empenhoRepository.save(empenho);
         return empenho;
     }

@@ -1,5 +1,6 @@
 package com.saneacre.gecons.domain.empenhos;
 
+import com.saneacre.gecons.domain.compras.CompraEntity;
 import com.saneacre.gecons.domain.contratos.ContratoEntity;
 import com.saneacre.gecons.domain.contratos.elemento_de_despesa.ElementoDeDespesaEntity;
 import com.saneacre.gecons.domain.contratos.fontes.FonteEntity;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Table(name = "empenhos")
 @Entity(name = "Empenho")
@@ -25,19 +27,19 @@ public class EmpenhoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "id_contrato", nullable = false)
     private ContratoEntity contrato;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "id_programa", nullable = false)
     private ProgramaDeTrabalhoEntity programa;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "id_elemento", nullable = false)
     private ElementoDeDespesaEntity elemento;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "id_fonte", nullable = false)
     private FonteEntity fonte;
 
@@ -51,6 +53,9 @@ public class EmpenhoEntity {
     private LocalDate data;
 
     private String descricao;
+
+    @OneToMany(mappedBy = "empenho")
+    private Set<CompraEntity> compras;
 
     public void atualizar(AtualizaEmpenhoDTO dados) {
         if (dados.numero() != null)
