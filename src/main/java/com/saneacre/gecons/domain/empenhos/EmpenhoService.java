@@ -105,14 +105,14 @@ public class EmpenhoService {
 
     private ContratoEntity validaContrato(Long idContrato) {
         var contrato = contratoRepository.findById(idContrato);
-        if (contrato.isEmpty() || !contrato.get().getAtivo())
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("Contrato com o id " + idContrato + " não encontrado!");
         return contrato.get();
     }
 
     private ProgramaDeTrabalhoEntity validaPrograma(Long idPrograma, ContratoEntity contrato) {
         var programa = programaDeTrabalhoRepository.findById(idPrograma);
-        if (programa.isEmpty() || !programa.get().getAtivo())
+        if (programa.isEmpty())
             throw new EntityNotFoundException("Programa de trabalho com o id " + idPrograma + " não encontrado!");
 
         var contratoPrograma = contratoProgramaRepository.findById(new ContratoProgramaId(contrato.getId(), programa.get().getId()));
@@ -125,7 +125,7 @@ public class EmpenhoService {
 
     private ElementoDeDespesaEntity validaElemento(Long idElemento, ContratoEntity contrato) {
         var elemento = elementoDeDespesaRepository.findById(idElemento);
-        if (elemento.isEmpty() || !elemento.get().getAtivo())
+        if (elemento.isEmpty())
             throw new EntityNotFoundException("Elemento de despesa com o id " + idElemento + " não encontrado!");
 
         var contratoElemento = contratoElementoRepository.findById(new ContratoElementoId(contrato.getId(), elemento.get().getId()));
@@ -138,7 +138,7 @@ public class EmpenhoService {
 
     private FonteEntity validaFonte(Long idFonte, ContratoEntity contrato) {
         var fonte = fonteRepository.findById(idFonte);
-        if (fonte.isEmpty() || !fonte.get().getAtivo())
+        if (fonte.isEmpty())
             throw new EntityNotFoundException("Fonte com o id " + idFonte + " não encontrada!");
 
         var contratoFonte = contratoFonteRepository.findById(new ContratoFonteId(contrato.getId(), fonte.get().getId()));

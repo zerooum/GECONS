@@ -29,8 +29,6 @@ public class FonteEntity {
 
     private String descricao;
 
-    private Boolean ativo;
-
     @OneToMany(mappedBy = "fonte")
     Set<ContratoFonteEntity> fonte_contrato;
 
@@ -46,7 +44,6 @@ public class FonteEntity {
     public FonteEntity(CriaFonteDTO dados) {
         this.numero = dados.numero();
         this.descricao = dados.descricao();
-        this.ativo = true;
     }
 
     public void atualizar(AtualizaFonteDTO dados) {
@@ -56,9 +53,5 @@ public class FonteEntity {
         if (dados.descricao() != null)
             this.descricao = dados.descricao();
 
-    }
-
-    public void excluir() {
-        this.ativo = false;
     }
 }

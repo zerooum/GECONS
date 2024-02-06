@@ -37,8 +37,6 @@ public class FornecedorEntity {
 
     private String email;
 
-    private Boolean ativo;
-
     @OneToMany(mappedBy = "fornecedor")
     Set<ContratoFornecedorPoEntity> contrato_fornecedor_demanda;
 
@@ -57,7 +55,6 @@ public class FornecedorEntity {
         this.documento = dados.documento();
         this.contato = dados.contato();
         this.email = dados.email();
-        this.ativo = true;
     }
 
     public void atualizar(AtualizaFornecedorDTO dados) {
@@ -80,7 +77,4 @@ public class FornecedorEntity {
 
     }
 
-    public void excluir() {
-        this.ativo = false;
-    }
 }

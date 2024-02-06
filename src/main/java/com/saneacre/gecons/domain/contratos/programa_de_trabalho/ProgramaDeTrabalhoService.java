@@ -19,12 +19,12 @@ public class ProgramaDeTrabalhoService {
     }
 
     public Page<RetornaProgramaDeTrabalhoDTO> buscarTodosProgramas(Pageable paginacao) {
-        return programaDeTrabalhoRepository.findAllByAtivoTrue(paginacao).map(RetornaProgramaDeTrabalhoDTO::new);
+        return programaDeTrabalhoRepository.findAll(paginacao).map(RetornaProgramaDeTrabalhoDTO::new);
     }
 
     public RetornaProgramaDeTrabalhoDTO buscaProgramaPorId(Long id) {
         var programa = programaDeTrabalhoRepository.findById(id);
-        if (programa.isEmpty() || !programa.get().getAtivo())
+        if (programa.isEmpty())
             throw new EntityNotFoundException("programa com o id " + id + " não encontrado!");
 
         return new RetornaProgramaDeTrabalhoDTO(programa.get());
@@ -32,7 +32,7 @@ public class ProgramaDeTrabalhoService {
 
     public ProgramaDeTrabalhoEntity atualizaPrograma(Long id, AtualizaProgramaDeTrabalhoDTO dados) {
         var programa = programaDeTrabalhoRepository.findById(id);
-        if (programa.isEmpty() || !programa.get().getAtivo())
+        if (programa.isEmpty())
             throw new EntityNotFoundException("Programa com o id " + id + " não encontrado!");
         programa.get().atualizar(dados);
         return programa.get();
@@ -40,8 +40,9 @@ public class ProgramaDeTrabalhoService {
 
     public void deletaPrograma(Long id) {
         var programa = programaDeTrabalhoRepository.findById(id);
-        if (programa.isEmpty() || !programa.get().getAtivo())
+        if (programa.isEmpty())
             throw new EntityNotFoundException("Programa com o id " + id + " não encontrado!");
-        programa.get().excluir();
+
+        programaDeTrabalhoRepository.delete(programa.get());
     }
 }

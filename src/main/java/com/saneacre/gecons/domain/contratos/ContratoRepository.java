@@ -5,6 +5,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ContratoRepository extends JpaRepository<ContratoEntity, Long> {
-    Page<ContratoEntity> findAllByAtivoTrue(Pageable paginacao);
     ContratoEntity findByNumero(String numero);
 }

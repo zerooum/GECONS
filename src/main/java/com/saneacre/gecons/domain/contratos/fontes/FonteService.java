@@ -19,12 +19,12 @@ public class FonteService {
     }
 
     public Page<RetornaFonteDTO> buscarTodasFontes(Pageable paginacao) {
-        return fonteRepository.findAllByAtivoTrue(paginacao).map(RetornaFonteDTO::new);
+        return fonteRepository.findAll(paginacao).map(RetornaFonteDTO::new);
     }
 
     public RetornaFonteDTO buscaFontePorId(Long id) {
         var fonte = fonteRepository.findById(id);
-        if (fonte.isEmpty() || !fonte.get().getAtivo())
+        if (fonte.isEmpty())
             throw new EntityNotFoundException("Fonte com o id " + id + " não encontrado!");
 
         return new RetornaFonteDTO(fonte.get());
@@ -32,7 +32,7 @@ public class FonteService {
 
     public FonteEntity atualizaFonte(Long id, AtualizaFonteDTO dados) {
         var fonte = fonteRepository.findById(id);
-        if (fonte.isEmpty() || !fonte.get().getAtivo())
+        if (fonte.isEmpty())
             throw new EntityNotFoundException("Fonte com o id " + id + " não encontrado!");
         fonte.get().atualizar(dados);
         return fonte.get();
@@ -40,8 +40,9 @@ public class FonteService {
 
     public void deletaFonte(Long id) {
         var fonte = fonteRepository.findById(id);
-        if (fonte.isEmpty() || !fonte.get().getAtivo())
+        if (fonte.isEmpty())
             throw new EntityNotFoundException("Fonte com o id " + id + " não encontrado!");
-        fonte.get().excluir();
+
+        fonteRepository.delete(fonte.get());
     }
 }

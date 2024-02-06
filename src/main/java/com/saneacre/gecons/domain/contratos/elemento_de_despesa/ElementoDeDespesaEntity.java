@@ -30,8 +30,6 @@ public class ElementoDeDespesaEntity {
 
     private String descricao;
 
-    private Boolean ativo;
-
     @OneToMany(mappedBy = "elemento")
     Set<ContratoElementoEntity> elemento_contrato;
 
@@ -50,7 +48,6 @@ public class ElementoDeDespesaEntity {
     public ElementoDeDespesaEntity(CriaElementoDeDespesaDTO dados) {
         this.numero = dados.numero();
         this.descricao = dados.descricao();
-        this.ativo = true;
     }
 
     public void atualizar(AtualizaElementoDeDespesaDTO dados) {
@@ -60,10 +57,6 @@ public class ElementoDeDespesaEntity {
         if (dados.descricao() != null)
             this.descricao = dados.descricao();
 
-    }
-
-    public void excluir() {
-        this.ativo = false;
     }
 
 }

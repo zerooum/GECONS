@@ -52,8 +52,6 @@ public class ContratoEntity {
     private String gestorTitular;
     private String gestorSubstituto;
 
-    private Boolean ativo;
-
     @OneToMany(mappedBy = "contrato")
     Set<ContratoFornecedorPoEntity> contrato_fornecedor_demanda;
 
@@ -92,7 +90,6 @@ public class ContratoEntity {
         this.fiscalSubstituto = dados.fiscalTitular();
         this.gestorTitular = dados.gestorTitular();
         this.gestorSubstituto = dados.gestorSubstituto();
-        this.ativo = true;
     }
 
     public void atualizar(AtualizaContratoDTO dados) {
@@ -131,10 +128,6 @@ public class ContratoEntity {
             this.gestorSubstituto = dados.gestorSubstituto();
         }
 
-    }
-
-    public void excluir() {
-        this.ativo = false;
     }
 
 }

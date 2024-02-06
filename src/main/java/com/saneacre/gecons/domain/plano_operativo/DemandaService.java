@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,12 +25,12 @@ public class DemandaService {
     }
 
     public Page<RetornaDemandaDTO> buscaTodasDemandas(Pageable paginacao) {
-        return demandaRepository.findAllByAtivoTrue(paginacao).map(RetornaDemandaDTO::new);
+        return demandaRepository.findAll(paginacao).map(RetornaDemandaDTO::new);
     }
 
     public DemandaEntity buscaDemandaPorId(Long id) {
         var demanda = demandaRepository.findById(id);
-        if (demanda.isEmpty() || !demanda.get().getAtivo())
+        if (demanda.isEmpty())
             throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
 
         return demanda.get();
@@ -39,30 +38,29 @@ public class DemandaService {
 
     public DemandaEntity atualizarDemanda(AtualizaDemandaDTO dados, Long id) {
         var demanda = demandaRepository.findById(id);
-        if (demanda.isPresent()) {
-            if (!demanda.get().getAtivo()) throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
-            demanda.get().atualizar(dados);
-            return demanda.get();
-        }
-        throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+        if (demanda.isEmpty())
+            throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+
+        demanda.get().atualizar(dados);
+        return demanda.get();
+
     }
 
     public void excluirDemanda(Long id) {
         var demanda = demandaRepository.findById(id);
-        if (demanda.isPresent()) {
-            if (!demanda.get().getAtivo()) throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
-            demanda.get().excluir();
-            return;
-        }
-        throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+        if (demanda.isEmpty())
+            throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
+
+        demandaRepository.delete(demanda.get());
     }
 
     public List<DetalhaDemandaContratoDTO> detalhaDemandaContratos(Long id) {
         var demanda = demandaRepository.findById(id);
-        if (demanda.isEmpty() || !demanda.get().getAtivo())
+        if (demanda.isEmpty())
             throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
 
         var contratoFornecedorPo = contratoFornecedorPoRepository.findByDemanda(demanda.get());
         return contratoFornecedorPo.stream().map(DetalhaDemandaContratoDTO::new).toList();
     }
+
 }

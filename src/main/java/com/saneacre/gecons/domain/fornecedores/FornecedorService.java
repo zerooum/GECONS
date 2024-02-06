@@ -26,41 +26,37 @@ public class FornecedorService {
     }
 
     public Page<RetornaFornecedorDTO> buscaTodosFornecedores(Pageable paginacao) {
-        return fornecedorRepository.findAllByAtivoTrue(paginacao).map(RetornaFornecedorDTO::new);
+        return fornecedorRepository.findAll(paginacao).map(RetornaFornecedorDTO::new);
     }
 
     public FornecedorEntity buscaFornecedorPorId(Long id) {
         var fornecedor = fornecedorRepository.findById(id);
-        if (fornecedor.isPresent()) {
-            if (!fornecedor.get().getAtivo()) throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
-            return fornecedor.get();
-        }
-        throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
+        if (fornecedor.isEmpty())
+            throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
+
+        return fornecedor.get();
     }
 
     public FornecedorEntity atualizaFornecedor(AtualizaFornecedorDTO dados, Long id) {
         var fornecedor = fornecedorRepository.findById(id);
-        if (fornecedor.isPresent()) {
-            if (!fornecedor.get().getAtivo()) throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
-            fornecedor.get().atualizar(dados);
-            return fornecedor.get();
-        }
-        throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
+        if (fornecedor.isEmpty())
+            throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
+
+        fornecedor.get().atualizar(dados);
+        return fornecedor.get();
     }
 
-    public void deletaContrato(Long id) {
+    public void deletaFornecedor(Long id) {
         var fornecedor = fornecedorRepository.findById(id);
-        if (fornecedor.isPresent()) {
-            if (!fornecedor.get().getAtivo()) throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
-            fornecedor.get().excluir();
-            return;
-        }
-        throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
+        if (fornecedor.isEmpty())
+            throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
+
+        fornecedorRepository.delete(fornecedor.get());
     }
 
     public List<DetalhaFornecedorContratoDTO> detalhaFornecedorContrato(Long id) {
         var fornecedor = fornecedorRepository.findById(id);
-        if (fornecedor.isEmpty() || !fornecedor.get().getAtivo())
+        if (fornecedor.isEmpty())
             throw new EntityNotFoundException("Fornecedor com o id " + id + " não encontrado!");
 
         var contratoFornecedorPo = contratoFornecedorPoRepository.findByFornecedor(fornecedor.get());

@@ -30,8 +30,6 @@ public class ProgramaDeTrabalhoEntity {
 
     private String descricao;
 
-    private Boolean ativo;
-
     @OneToMany(mappedBy = "programa")
     Set<ContratoProgramaEntity> programa_contrato;
 
@@ -50,7 +48,6 @@ public class ProgramaDeTrabalhoEntity {
     public ProgramaDeTrabalhoEntity(CriaProgramaDeTrabalhoDTO dados) {
         this.numero = dados.numero();
         this.descricao = dados.descricao();
-        this.ativo = true;
     }
 
     public void atualizar(AtualizaProgramaDeTrabalhoDTO dados) {
@@ -62,7 +59,4 @@ public class ProgramaDeTrabalhoEntity {
 
     }
 
-    public void excluir() {
-        this.ativo = false;
-    }
 }

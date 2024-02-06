@@ -5,7 +5,6 @@ import com.saneacre.gecons.domain.enums.TiposDemanda;
 import com.saneacre.gecons.domain.enums.Unidades;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 

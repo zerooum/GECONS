@@ -60,7 +60,7 @@ public class FornecedorController {
     @Transactional
     @PreAuthorize("hasRole('FORNECEDORES_DELETAR') or hasRole('ADMIN')")
     public ResponseEntity<RespostaSimplesDTO> excluirFornecedor(@PathVariable Long id) {
-        service.deletaContrato(id);
+        service.deletaFornecedor(id);
         return ResponseEntity.ok().body(new RespostaSimplesDTO("Fornecedor com id " + id + " excluido!"));
     }
 

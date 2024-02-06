@@ -67,12 +67,12 @@ public class ContratoService {
     }
 
     public Page<RetornaContratoDTO> buscaTodosContratos(Pageable paginacao) {
-        return contratoRepository.findAllByAtivoTrue(paginacao).map(RetornaContratoDTO::new);
+        return contratoRepository.findAll(paginacao).map(RetornaContratoDTO::new);
     }
 
     public RetornaContratoDTO buscaContratoPorId(Long id) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isEmpty() || !contrato.get().getAtivo())
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
 
         return new RetornaContratoDTO(contrato.get());
@@ -80,7 +80,7 @@ public class ContratoService {
 
     public ContratoEntity atualizarContrato(Long id, AtualizaContratoDTO dados) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isEmpty() || !contrato.get().getAtivo())
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
         contrato.get().atualizar(dados);
         return contrato.get();
@@ -88,24 +88,24 @@ public class ContratoService {
 
     public void deletaContrato(Long id) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isEmpty() || !contrato.get().getAtivo())
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("Item com o id " + id + " não encontrado!");
 
-        contrato.get().excluir();
+        contratoRepository.delete(contrato.get());
     }
 
     // Itens do contrato
     public ContratoFornecedorPoEntity getContratoFornecedorPo(ItemNoContratoDTO dados) {
         var contrato = contratoRepository.findByNumero(dados.contrato());
-        if (contrato == null || !contrato.getAtivo())
+        if (contrato == null)
             throw new EntityNotFoundException("O contrato informado não está cadastrado!");
 
         var fornecedor = fornecedorRepository.findByNome(dados.fornecedor());
-        if (fornecedor == null || !contrato.getAtivo())
+        if (fornecedor == null)
             throw new EntityNotFoundException("O fornecedor informado não está cadastrado!");
 
         var demanda = demandaRepository.findByNome(dados.demanda());
-        if (demanda == null || !contrato.getAtivo())
+        if (demanda == null)
             throw new EntityNotFoundException("A demanda informada não está cadastrada!");
 
         if (dados.quant_consumo() != null && dados.quant_consumo().compareTo(dados.quant_registro()) > 0)
@@ -161,7 +161,7 @@ public class ContratoService {
 
     public List<ItensContratoDTO> buscaItensDoContrato(Long id) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isEmpty() || !contrato.get().getAtivo())
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
 
         var contratoItens = contratoFornecedorPoRepository.findByContrato(contrato.get());
@@ -172,11 +172,11 @@ public class ContratoService {
     //Programas do contrato
     public ContratoProgramaEntity getContratoPrograma(ProgramaNoContratoDTO dados) {
         var contrato = contratoRepository.findByNumero(dados.contrato());
-        if (contrato == null || !contrato.getAtivo())
+        if (contrato == null)
             throw new EntityNotFoundException("O contrato informado não está cadastrado!");
 
         var programa = programaDeTrabalhoRepository.findByNumero(dados.programa());
-        if (programa == null || !programa.getAtivo())
+        if (programa == null)
             throw new EntityNotFoundException("O programa de trabalho informado não está cadastrado!");
 
         ContratoProgramaId id = new ContratoProgramaId(contrato.getId(), programa.getId());
@@ -212,7 +212,7 @@ public class ContratoService {
 
     public List<ProgramasContratoDTO> buscaProgramasDoContrato(Long id) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isEmpty() || !contrato.get().getAtivo())
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
 
         var contratoProgramas = contratoProgramaRepository.findByContrato(contrato.get());
@@ -222,11 +222,11 @@ public class ContratoService {
     //Elementos no contrato
     public ContratoElementoEntity getContratoElemento(ElementoNoContratoDTO dados) {
         var contrato = contratoRepository.findByNumero(dados.contrato());
-        if (contrato == null || !contrato.getAtivo())
+        if (contrato == null)
             throw new EntityNotFoundException("O contrato informado não está cadastrado!");
 
         var elemento = elementoDeDespesaRepository.findByNumero(dados.elemento());
-        if (elemento == null || !elemento.getAtivo())
+        if (elemento == null)
             throw new EntityNotFoundException("O elemento de despesa informado não está cadastrado!");
 
         ContratoElementoId id = new ContratoElementoId(contrato.getId(), elemento.getId());
@@ -262,7 +262,7 @@ public class ContratoService {
 
     public List<ElementosContratoDTO> buscaElementosDoContrato(Long id) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isEmpty() || !contrato.get().getAtivo())
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
 
         var contratoElementos = contratoElementoRepository.findByContrato(contrato.get());
@@ -272,11 +272,11 @@ public class ContratoService {
     //Fontes no contrato
     public ContratoFonteEntity getFonteElemento(FonteNoContratoDTO dados) {
         var contrato = contratoRepository.findByNumero(dados.contrato());
-        if (contrato == null || !contrato.getAtivo())
+        if (contrato == null)
             throw new EntityNotFoundException("O contrato informado não está cadastrado!");
 
         var fonte = fonteRepository.findByNumero(dados.fonte());
-        if (fonte == null || !fonte.getAtivo())
+        if (fonte == null)
             throw new EntityNotFoundException("A fonte informada não está cadastrada!");
 
         ContratoFonteId id = new ContratoFonteId(contrato.getId(), fonte.getId());
@@ -312,7 +312,7 @@ public class ContratoService {
 
     public List<FontesContratoDTO> buscaFontesDoContrato(Long id) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isEmpty() || !contrato.get().getAtivo())
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
 
         var contratoFontes = contratoFonteRepository.findByContrato(contrato.get());
@@ -322,7 +322,7 @@ public class ContratoService {
     //Empenhos no contrato
     public List<EmpenhosContratoDTO> buscaEmpenhosDoContrato(Long id) {
         var contrato = contratoRepository.findById(id);
-        if (contrato.isEmpty() || !contrato.get().getAtivo())
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("Contrato com o id " + id + " não encontrado!");
 
         var contratoEmpenhos = empenhoRepository.findByContrato(contrato.get());

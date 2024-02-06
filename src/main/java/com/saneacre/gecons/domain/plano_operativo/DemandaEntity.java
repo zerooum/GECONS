@@ -42,8 +42,6 @@ public class DemandaEntity {
     @Column(precision = 10, scale = 2)
     private BigDecimal quantidade;
 
-    private Boolean ativo;
-
     @OneToMany(mappedBy = "demanda")
     Set<ContratoFornecedorPoEntity> contrato_fornecedor_demanda;
 
@@ -62,7 +60,6 @@ public class DemandaEntity {
         this.tipo = dados.tipo();
         this.grupo = dados.grupo();
         this.quantidade = dados.quantidade();
-        this.ativo = true;
     }
 
     public void atualizar(AtualizaDemandaDTO dados) {
@@ -83,7 +80,4 @@ public class DemandaEntity {
         }
     }
 
-    public void excluir() {
-        this.ativo = false;
-    }
 }

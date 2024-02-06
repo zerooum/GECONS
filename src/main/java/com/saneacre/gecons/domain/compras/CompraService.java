@@ -8,7 +8,6 @@ import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoEnt
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoId;
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoRepository;
 import com.saneacre.gecons.domain.contratos.ContratoEntity;
-import com.saneacre.gecons.domain.contratos.RetornaContratoDTO;
 import com.saneacre.gecons.domain.empenhos.EmpenhoEntity;
 import com.saneacre.gecons.domain.empenhos.EmpenhoRepository;
 import com.saneacre.gecons.domain.fornecedores.FornecedorEntity;

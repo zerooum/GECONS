@@ -19,12 +19,12 @@ public class ElementoDeDespesaService {
     }
 
     public Page<RetornaElementoDeDespesaDTO> buscarTodosElementos(Pageable paginacao) {
-        return elementoDeDespesaRepository.findAllByAtivoTrue(paginacao).map(RetornaElementoDeDespesaDTO::new);
+        return elementoDeDespesaRepository.findAll(paginacao).map(RetornaElementoDeDespesaDTO::new);
     }
 
     public RetornaElementoDeDespesaDTO buscaElementoPorId(Long id) {
         var elemento = elementoDeDespesaRepository.findById(id);
-        if (elemento.isEmpty() || !elemento.get().getAtivo())
+        if (elemento.isEmpty())
             throw new EntityNotFoundException("Elemento de despesa com o id " + id + " não encontrado!");
 
         return new RetornaElementoDeDespesaDTO(elemento.get());
@@ -32,7 +32,7 @@ public class ElementoDeDespesaService {
 
     public ElementoDeDespesaEntity atualizaElemento(Long id, AtualizaElementoDeDespesaDTO dados) {
         var elemento = elementoDeDespesaRepository.findById(id);
-        if (elemento.isEmpty() || !elemento.get().getAtivo())
+        if (elemento.isEmpty())
             throw new EntityNotFoundException("Elemento de despesa com o id " + id + " não encontrado!");
         elemento.get().atualizar(dados);
         return elemento.get();
@@ -40,9 +40,10 @@ public class ElementoDeDespesaService {
 
     public void deletaElemento(Long id) {
         var elemento = elementoDeDespesaRepository.findById(id);
-        if (elemento.isEmpty() || !elemento.get().getAtivo())
+        if (elemento.isEmpty())
             throw new EntityNotFoundException("Elemento de despesa com o id " + id + " não encontrado!");
-        elemento.get().excluir();
+
+        elementoDeDespesaRepository.delete(elemento.get());
     }
 
 }
