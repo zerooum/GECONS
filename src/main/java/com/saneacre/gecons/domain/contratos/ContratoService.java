@@ -1,5 +1,6 @@
 package com.saneacre.gecons.domain.contratos;
 
+import com.saneacre.gecons.domain.compras.itens.CompraItemRepository;
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoEntity;
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoId;
 import com.saneacre.gecons.domain.contrato_fornecedor_po.ContratoFornecedorPoRepository;
@@ -60,6 +61,9 @@ public class ContratoService {
     @Autowired
     EmpenhoRepository empenhoRepository;
 
+    @Autowired
+    CompraItemRepository compraItemRepository;
+
     public ContratoEntity cadastrarContrato(CriaContratoDTO dados) {
         var contrato = new ContratoEntity(dados);
         contratoRepository.save(contrato);
@@ -95,28 +99,30 @@ public class ContratoService {
     }
 
     // Itens do contrato
-    public ContratoFornecedorPoEntity getContratoFornecedorPo(ItemNoContratoDTO dados) {
-        var contrato = contratoRepository.findByNumero(dados.contrato());
-        if (contrato == null)
+    private ContratoFornecedorPoEntity getContratoFornecedorPo(ItemNoContratoDTO dados) {
+        var contrato = contratoRepository.findById(dados.idContrato());
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("O contrato informado não está cadastrado!");
 
-        var fornecedor = fornecedorRepository.findByNome(dados.fornecedor());
-        if (fornecedor == null)
+        var fornecedor = fornecedorRepository.findById(dados.idFornecedor());
+        if (fornecedor.isEmpty())
             throw new EntityNotFoundException("O fornecedor informado não está cadastrado!");
 
-        var demanda = demandaRepository.findByNome(dados.demanda());
-        if (demanda == null)
+        var demanda = demandaRepository.findById(dados.idDemanda());
+        if (demanda.isEmpty())
             throw new EntityNotFoundException("A demanda informada não está cadastrada!");
 
         if (dados.quant_consumo() != null && dados.quant_consumo().compareTo(dados.quant_registro()) > 0)
             throw new ConsumoMaiorQueRegistroException();
 
-        ContratoFornecedorPoId id = new ContratoFornecedorPoId(contrato.getId(), fornecedor.getId(), demanda.getId());
-        return new ContratoFornecedorPoEntity(id, contrato, fornecedor, demanda, dados.quant_consumo(),
+        ContratoFornecedorPoId id = new ContratoFornecedorPoId(contrato.get().getId(), fornecedor.get().getId(),
+                demanda.get().getId());
+
+        return new ContratoFornecedorPoEntity(id, contrato.get(), fornecedor.get(), demanda.get(), dados.quant_consumo(),
                                                 dados.quant_registro(), dados.valor_unitario());
     }
 
-    public ContratoFornecedorPoEntity adicionaItemNoContrato(ItemNoContratoDTO dados) {
+    public void adicionaItemNoContrato(ItemNoContratoDTO dados) {
         var contratoFornecedorPo = getContratoFornecedorPo(dados);
 
         var jaExiste = contratoFornecedorPoRepository.procuraChaveDuplicada(contratoFornecedorPo.getId());
@@ -126,16 +132,23 @@ public class ContratoService {
         verificaValorContrato(contratoFornecedorPo);
 
         contratoFornecedorPoRepository.save(contratoFornecedorPo);
-        return contratoFornecedorPo;
     }
 
     public void removeItemNoContrato(ItemNoContratoDTO dados) {
         var contratoFornecedorPo = getContratoFornecedorPo(dados);
 
-        var jaExiste = contratoFornecedorPoRepository.procuraChaveDuplicada(contratoFornecedorPo.getId());
-        if (jaExiste.isEmpty()) throw new EntityNotFoundException("O item não está presente no contrato!");
+        var itemNoContrato = contratoFornecedorPoRepository.procuraChaveDuplicada(contratoFornecedorPo.getId());
+        if (itemNoContrato.isEmpty())
+            throw new EntityNotFoundException("O item não está presente no contrato!");
 
-        // ADICIONAR LOGICA PARA VERIFICAR SE JA EXISTE COMPRAS DO ITEM ANTES DE REMOVER
+        // Verifica se ja existe compra do item a ser excluido
+        var comprasDoItem = compraItemRepository.findAllByContratoAndFornecedorAndDemanda(
+                contratoFornecedorPo.getContrato(),
+                contratoFornecedorPo.getFornecedor(),
+                contratoFornecedorPo.getDemanda()
+        );
+        if (!comprasDoItem.isEmpty())
+            throw new DataIntegrityViolationException("O item não pode ser excluído, pois ja existem compras associadas a este!");
 
         contratoFornecedorPoRepository.delete(contratoFornecedorPo);
     }
@@ -170,17 +183,17 @@ public class ContratoService {
     }
 
     //Programas do contrato
-    public ContratoProgramaEntity getContratoPrograma(ProgramaNoContratoDTO dados) {
-        var contrato = contratoRepository.findByNumero(dados.contrato());
-        if (contrato == null)
+    private ContratoProgramaEntity getContratoPrograma(ProgramaNoContratoDTO dados) {
+        var contrato = contratoRepository.findById(dados.idContrato());
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("O contrato informado não está cadastrado!");
 
-        var programa = programaDeTrabalhoRepository.findByNumero(dados.programa());
-        if (programa == null)
+        var programa = programaDeTrabalhoRepository.findById(dados.idPrograma());
+        if (programa.isEmpty())
             throw new EntityNotFoundException("O programa de trabalho informado não está cadastrado!");
 
-        ContratoProgramaId id = new ContratoProgramaId(contrato.getId(), programa.getId());
-        return new ContratoProgramaEntity(id, contrato, programa);
+        ContratoProgramaId id = new ContratoProgramaId(contrato.get().getId(), programa.get().getId());
+        return new ContratoProgramaEntity(id, contrato.get(), programa.get());
     }
 
     public void adicionaProgramaNoContrato(ProgramaNoContratoDTO dados) {
@@ -221,16 +234,16 @@ public class ContratoService {
 
     //Elementos no contrato
     public ContratoElementoEntity getContratoElemento(ElementoNoContratoDTO dados) {
-        var contrato = contratoRepository.findByNumero(dados.contrato());
-        if (contrato == null)
+        var contrato = contratoRepository.findById(dados.idContrato());
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("O contrato informado não está cadastrado!");
 
-        var elemento = elementoDeDespesaRepository.findByNumero(dados.elemento());
-        if (elemento == null)
+        var elemento = elementoDeDespesaRepository.findById(dados.idElemento());
+        if (elemento.isEmpty())
             throw new EntityNotFoundException("O elemento de despesa informado não está cadastrado!");
 
-        ContratoElementoId id = new ContratoElementoId(contrato.getId(), elemento.getId());
-        return new ContratoElementoEntity(id, contrato, elemento);
+        ContratoElementoId id = new ContratoElementoId(contrato.get().getId(), elemento.get().getId());
+        return new ContratoElementoEntity(id, contrato.get(), elemento.get());
     }
 
     public void adicionaElementoNoContrato(ElementoNoContratoDTO dados) {
@@ -271,16 +284,16 @@ public class ContratoService {
 
     //Fontes no contrato
     public ContratoFonteEntity getFonteElemento(FonteNoContratoDTO dados) {
-        var contrato = contratoRepository.findByNumero(dados.contrato());
-        if (contrato == null)
+        var contrato = contratoRepository.findById(dados.idContrato());
+        if (contrato.isEmpty())
             throw new EntityNotFoundException("O contrato informado não está cadastrado!");
 
-        var fonte = fonteRepository.findByNumero(dados.fonte());
-        if (fonte == null)
+        var fonte = fonteRepository.findById(dados.idFonte());
+        if (fonte.isEmpty())
             throw new EntityNotFoundException("A fonte informada não está cadastrada!");
 
-        ContratoFonteId id = new ContratoFonteId(contrato.getId(), fonte.getId());
-        return new ContratoFonteEntity(id, contrato, fonte);
+        ContratoFonteId id = new ContratoFonteId(contrato.get().getId(), fonte.get().getId());
+        return new ContratoFonteEntity(id, contrato.get(), fonte.get());
     }
 
     public void adicionaFonteNoContrato(FonteNoContratoDTO dados) {

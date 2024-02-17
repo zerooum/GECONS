@@ -98,8 +98,6 @@ public class EmpenhoService {
         if (empenho.isEmpty())
             throw new EntityNotFoundException("Empenho com o id " + id + " não encontrado!");
 
-        // VERIFICAR SE O EMPENHO EXISTE EM ALGUMA COMPRA
-
         empenhoRepository.delete(empenho.get());
     }
 

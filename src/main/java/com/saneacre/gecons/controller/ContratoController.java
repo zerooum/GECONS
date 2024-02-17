@@ -87,8 +87,8 @@ public class ContratoController {
     public ResponseEntity<RespostaSimplesDTO> removeItemNoContrato(@RequestBody @Valid ItemNoContratoDTO dados) {
         service.removeItemNoContrato(dados);
         return ResponseEntity.ok()
-                .body(new RespostaSimplesDTO("Item " + dados.demanda() + " removido do contrato " + dados.contrato()
-                        + " para o fornecedor " + dados.fornecedor()));
+                .body(new RespostaSimplesDTO("Item com id " + dados.idDemanda() + " removido do contrato com id " + dados.idContrato()
+                        + " para o fornecedor com id " + dados.idFornecedor()));
     }
 
     @GetMapping("/{id}/itens")
@@ -113,8 +113,8 @@ public class ContratoController {
     public ResponseEntity<RespostaSimplesDTO> removeProgramaNoContrato(@RequestBody @Valid ProgramaNoContratoDTO dados) {
         service.removeProgramaNoContrato(dados);
         return ResponseEntity.ok()
-                .body(new RespostaSimplesDTO("Programa de trabalho " + dados.programa()
-                        + " removido do contrato " + dados.contrato()));
+                .body(new RespostaSimplesDTO("Programa de trabalho com id " + dados.idPrograma()
+                        + " removido do contrato com id " + dados.idContrato()));
     }
 
     @GetMapping("/{id}/programas")
@@ -139,8 +139,8 @@ public class ContratoController {
     public ResponseEntity<RespostaSimplesDTO> removeElementoNoContrato(@RequestBody @Valid ElementoNoContratoDTO dados) {
         service.removeElementoNoContrato(dados);
         return ResponseEntity.ok()
-                .body(new RespostaSimplesDTO("Elemento de despesa " + dados.elemento()
-                        + " removido do contrato " + dados.contrato()));
+                .body(new RespostaSimplesDTO("Elemento de despesa com id " + dados.idElemento()
+                        + " removido do contrato com id " + dados.idContrato()));
     }
 
     @GetMapping("/{id}/elementos")
@@ -165,8 +165,8 @@ public class ContratoController {
     public ResponseEntity<RespostaSimplesDTO> removeFonteNoContrato(@RequestBody @Valid FonteNoContratoDTO dados) {
         service.removeFonteNoContrato(dados);
         return ResponseEntity.ok()
-                .body(new RespostaSimplesDTO("Fonte " + dados.fonte()
-                        + " removida do contrato " + dados.contrato()));
+                .body(new RespostaSimplesDTO("Fonte com id " + dados.idFonte()
+                        + " removida do contrato com id " + dados.idContrato()));
     }
 
     @GetMapping("/{id}/fontes")
